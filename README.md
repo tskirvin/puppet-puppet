@@ -1,4 +1,5 @@
-puppet-puppet
-=============
+# puppet-module-puppet #
+===
 
-Install and configure puppet itself on the clients.
+This module begins life as a merge between some old puppet code, the
+ghoneycutt puppet module, and a lot of local custom work.  

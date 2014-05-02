@@ -1,0 +1,28 @@
+# This file is being maintained by Puppet.
+# DO NOT EDIT
+
+[main]
+  logdir = /var/log/puppet
+  rundir = /var/run/puppet
+  ssldir = $vardir/ssl
+
+  archive_files       = true
+  archive_file_server = <%= @puppet_server %>
+
+[agent]
+  environment = <%= @env %>
+  classfile   = $vardir/classes.txt
+  localconfig = $vardir/localconfig
+  certname    = <%= @certname %>
+  server      = <%= @puppet_server %>
+
+  report      = true
+  graph       = true
+  pluginsync  = true
+
+<% if @puppet_ca_server != 'UNSET' %>
+  ca_server   = <%= @puppet_ca_server %>
+<% end -%>
+<% if @run_method == 'service' %>
+  noop        = <%= @run_in_noop %>
+<% end -%>

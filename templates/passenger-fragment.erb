@@ -1,0 +1,22 @@
+  ## Tell Passenger to do its thing
+  RackAutoDetect On
+
+  ## These request headers are used to pass the client certificate
+  ## authentication information on to the puppet master process
+  RequestHeader set X-SSL-Subject %{SSL_CLIENT_S_DN}e
+  RequestHeader set X-Client-DN %{SSL_CLIENT_S_DN}e
+  RequestHeader set X-Client-Verify %{SSL_CLIENT_VERIFY}e
+
+  ## Additional SSL configuration for passenger to work right (especially
+  ## w.r.t. /etc/puppet/auth.conf - I don't know what's going on there)
+  SSLProtocol             All -SSLv2
+  SSLCipherSuite          HIGH:!ADH:RC4+RSA:-MEDIUM:-LOW:-EXP
+  SSLVerifyClient         optional
+  SSLVerifyDepth          1
+  SSLOptions              +StdEnvVars +ExportCertData
+<% unless @is_ca -%>
+
+  ## We are not the CA, so proxy the connections elsewhere.
+  SSLProxyEngine On
+  ProxyPassMatch ^/([^/]+/certificate.*)$ https://<%= @puppetca %>:<%= @port %>/$1
+<% end -%>

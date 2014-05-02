@@ -1,0 +1,68 @@
+# This file is being maintained by Puppet.
+# DO NOT EDIT
+
+[main]
+  logdir = /var/log/puppet
+  rundir = /var/run/puppet
+  ssldir = $vardir/ssl
+  <%- if @dns_alt_names -%>
+  dns_alt_names = <%= @dns_alt_names.join(', ') %>
+  <%- end -%>
+<% if @agent -%>
+
+[agent]
+  environment = <%= @env %>
+  server      = <%= @server %>
+  <%- if @ca_server != 'UNSET' -%>
+  ca_server   = <%= @ca_server %>
+  <%- end -%>
+  classfile   = $vardir/classes.txt
+  localconfig = $vardir/localconfig
+  certname    = <%= @certname %>
+
+  report      = true
+  graph       = true
+  pluginsync  = true
+  <%- if @run_in_noop -%>
+  noop        = true
+  <%- end -%>
+<%- end -%>
+<%- if @master -%>
+
+[master]
+  ca          = <%= @is_ca ? "true" : "false" %>
+  manifestdir = <%= @manifestdir %>
+  manifest    = <%= @manifest %>
+  modulepath  = <%= @modulepath %>
+
+  # List of reports to run
+  # reports = tagmail,lastcheck,logcache
+  reports = <%= @reports.join(',') %>
+
+  # Enable graphing of relationship maps
+  graph = true
+
+  # Location of the certificate revocation list
+  cacrl = /var/lib/puppet/ssl/crl.pem
+
+  # Proper ssl variable passing for apache
+  ssl_client_header        = SSL_CLIENT_S_DN
+  ssl_client_verify_header = SSL_CLIENT_VERIFY
+
+  # If we have enabled autosign configuration, it's configured here
+  autosign = /etc/puppet/autosign.conf
+
+  <%- if @enc != 'UNSET' -%>
+  # Enable an External Node Classifier
+  node_terminus = exec
+  external_nodes = <%= enc %>
+  <%- end -%>
+  <%- if @use_puppetdb -%>
+  # Enable the puppetdb
+  storeconfigs = true
+  storeconfigs_backend = puppetdb
+  <%- end -%>
+  <%- if @reporturl != 'UNSET' -%>
+  reporturl = <%= @reporturl %>
+  <%- end -%>
+<%- end -%>

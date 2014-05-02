@@ -1,0 +1,17 @@
+---
+:backends:
+  - gpg
+  - yaml
+
+:hierarchy:
+  - "hosts/%{clientcert}"
+  - "roles/%{role::base::hier_role}"
+  - "%{role::base::hier_top}"
+  - common
+
+:yaml:
+  :datadir: '/srv/puppet/environments/%{environment}/hieradata'
+
+:gpg:
+  :datadir: '/srv/puppet/environments/%{environment}/hieradata'
+  :key_dir: '/srv/puppet/gpg'
