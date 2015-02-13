@@ -1,0 +1,27 @@
+{
+  "name": "puppet-puppet",
+  "version": "1.0.0",
+  "author": "Tim Skirvin <tskirvin@fnal.gov>",
+  "summary": "manage puppet.conf, puppet runs, and puppet masters",
+  "license": "Apache License, Version 2.0",
+  "source": "https://github.com/tskirvin/puppet-puppet",
+  "project_page": "https://github.com/tskirvin/puppet-puppet",
+  "issues_url": "",
+  "tags": [ "puppet.conf", "passenger", "webrick" ],
+  "operatingsystem_support": [
+    { 
+      "operatingsystem": "Scientific", 
+      "operatingsystemmajrelease": [ "6" ] 
+    },
+    { 
+      "operatingsystem": "Debian", 
+      "operatingsystemmajrelease": [ "6", "7" ] 
+    },
+  ],
+  "dependencies": [ 
+    { "name": "puppetlabs/apache", ">= 0.9.0" },
+    { "name": "puppetlabs/passenger", ">= 0.0.4" },
+    { "name": "puppetlabs/stdlib", "version_requirement": ">=4.5.1" },
+    { "name": "saz/rsyslog", "version_requirement": ">=3.4.0" }
+  ]
+}

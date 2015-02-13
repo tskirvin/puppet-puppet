@@ -5,9 +5,6 @@
 #   Most of the actual work is done in puppet::master::*, which define
 #   the web interface; see the 'web' parameter for details.
 #
-#   Also defines (but does not populate) /etc/puppet/auth.conf and
-#   /etc/puppet/fileserver.conf .
-#
 # == Parameters
 #
 #   contact   Array of email addresses that should be contacted with the
