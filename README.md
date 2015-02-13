@@ -57,6 +57,7 @@ Parameters:
                   Defaults to false.
      modules      An array of module paths, relative to $basedir/ .
                   Defaults to [ 'modules' ].
+     no_warnings  Array of strings from which to ignore warnings.
      port         Which port are we talking on?  Defaults to 8140.
      reports      Array of reports to send after a puppet run.  Defaults
                   empty; valid options include 'puppetdb' and 'tagmail'.

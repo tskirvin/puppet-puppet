@@ -22,11 +22,14 @@
 #    config_path  /etc/puppet
 #    enc          Are we using an external node classifier?  If so, set
 #                 this to the right script name.  Defaults to 'false'.
+#    envdir       /etc/puppet/environments
+#    env_timeout  180 (seconds)
 #    is_ca        Am I the Certificate Authority?  Defaults to false.
 #    master       Should we configure the puppet master variables?
 #                 Defaults to false.
 #    modules      An array of module paths, relative to $basedir/ .
 #                 Defaults to [ 'modules' ].
+#    no_warnings  Array of strings from which to ignore warnings.
 #    port         Which port are we talking on?  Defaults to 8140.
 #    reports      Array of reports to send after a puppet run.  Defaults
 #                 empty; valid options include 'puppetdb' and 'tagmail'.
@@ -51,9 +54,12 @@ class puppet::config (
   $config_path  = '/etc/puppet',
   $enc          = 'UNSET',
   $env          = $::env,
+  $envdir       = '/etc/puppet/environments',
+  $env_timeout  = 180,
   $is_ca        = false,
   $master       = false,
   $modules      = [ 'modules' ],
+  $no_warnings  = [],
   $port         = 8140,
   $reports      = [],
   $reporturl    = 'UNSET',
@@ -61,13 +67,10 @@ class puppet::config (
   $server       = undef,
   $use_puppetdb = false
 ) {
+  validate_string ($server, $env)
   if ! $env { fail ('puppet::config::env must be set') }
 
   $modules_paths = prefix ($modules, "${basedir}/")
-
-  $manifestdir = "${basedir}/manifests"
-  $manifest    = "${basedir}/manifests/site.pp"
-  $modulepath  = join ($modules_paths, ':')
 
   if count($aliases) > 0 {
     validate_array($aliases)
