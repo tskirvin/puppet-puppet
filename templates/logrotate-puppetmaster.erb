@@ -1,0 +1,14 @@
+<%= @logdir %>/masterhttp.log <%= @logdir %>/puppetmaster.log {
+  missingok
+  notifempty
+  create 0660 puppet puppet
+  sharedscripts
+  postrotate
+  <% if @web == 'passenger' -%>
+    [ -e /etc/init.d/httpd  ] && /etc/init.d/httpd reload > /dev/null 2>&1 || true
+  <% else -%>
+    pkill -USR2 -u puppet -f 'puppet master' || true
+    [ -e /etc/init.d/puppetmaster ] && /etc/init.d/puppetmaster reload > /dev/null 2>&1 || true
+  <% end -%>
+  endscript
+}

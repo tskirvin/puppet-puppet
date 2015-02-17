@@ -97,10 +97,18 @@ class puppet::agent (
 
   if ($logdir) {
     validate_absolute_path ($logdir)
+    rsyslog::snippet { '00-puppet':
+      ensure  => present,
+      content => "if \$programname == 'puppet-agent' then -${logdir}/puppet.log\n& ~"
+    }
     file { "${logdir}/puppet.log":
       owner => 'puppet',
       group => 'puppet',
       mode  => '0660'
+    }
+    file { '/etc/logrotate.d/puppet':
+      ensure  => present,
+      content => template('puppet/logrotate-puppet.erb')
     }
   }
 }

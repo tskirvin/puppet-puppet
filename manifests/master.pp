@@ -51,10 +51,18 @@ class puppet::master (
 
   if ($logdir) {
     validate_absolute_path ($logdir)
+    rsyslog::snippet { '00-puppetmaster':
+      ensure  => present,
+      content => "if \$programname == 'puppet-master' then -${logdir}/puppetmaster.log\n& ~"
+    }
     file { "${logdir}/puppetmaster.log":
       owner => 'puppet',
       group => 'puppet',
       mode  => '0660'
+    }
+    file { '/etc/logrotate.d/puppetmaster':
+      ensure  => present,
+      content => template('puppet/logrotate-puppetmaster.erb')
     }
   }
 }
