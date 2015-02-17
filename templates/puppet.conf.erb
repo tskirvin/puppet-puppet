@@ -8,6 +8,9 @@
   <%- if @dns_alt_names -%>
   dns_alt_names = <%= @dns_alt_names.join(', ') %>
   <%- end -%>
+  <%- if @no_warnings -%>
+  disable_warnings = <%= @no_warnings.join(',') %>
+  <%- end -%>
 <% if @agent -%>
 
 [agent]
@@ -31,9 +34,10 @@
 
 [master]
   ca          = <%= @is_ca ? "true" : "false" %>
-  manifestdir = <%= @manifestdir %>
-  manifest    = <%= @manifest %>
-  modulepath  = <%= @modulepath %>
+
+  # Directory Environments
+  environmentpath     = <%= @envdir %>
+  environment_timeout = <%= @env_timeout %>
 
   # List of reports to run
   # reports = tagmail,lastcheck,logcache
