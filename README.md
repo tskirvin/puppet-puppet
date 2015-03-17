@@ -1,7 +1,14 @@
 # puppet-puppet
 
-This module begins life as a merge between some old puppet code, the
-ghoneycutt puppet module, and a lot of local custom work.  
+This puppet module is meant to manage /etc/puppet/puppet.conf and its
+family.  It provides hooks for rsyslog + logrotate, supports servers
+running either mod\_passenger and webrick, and is configurable via hiera.  
+
+This module began life as a merge between
+some old puppet code, the [ghoneycutt puppet
+module](https://github.com/ghoneycutt/puppet-module-puppet), and a lot
+of local custom work.  It's currently in production across at least two
+sites, one large (~1200 nodes) and one small (~3 nodes).
 
 ## Classes
 
@@ -12,10 +19,10 @@ daemon (default), or via cron on a regular basis.
 
 Parameters:
 
-     cron_command   Command to run if we're running via cron.  There is a
-                    default, and I don't use it much so somebody should 
+     cron_command   Command to run if we are running via cron.  There is a
+                    default, and I do not use it much so somebody should 
                     look at it in more detail.
-     daemon_name    If we're running as a daemon, what is the daemon name?
+     daemon_name    If we are running as a daemon, what is the daemon name?
                     Defaults to 'puppet'.
      logdir         Set up logging, pointing at this log directory.  Any
                     logs go to ${logdir}/puppet.log, in addition to syslog.
@@ -29,45 +36,45 @@ Parameters:
 
 ### puppet::config
 
-Manages /etc/puppet/puppet.conf (or equivalent).  It is meant for configuration via hiera.
+Manages `/etc/puppet/puppet.conf`.  It is meant for configuration via hiera.
 
 Parameters:
 
-     agent        Should we configure the puppet agent variables?
-                  Defaults to true.
-     aliases      An array of alternate server names.  If set, you'll
-                  probably have to handle some manual steps to bring the
-                  host up as part of a pool, involving signing the larger
-                  cert; see:
+    agent        Should we configure the puppet agent variables?
+                 Defaults to true.
+    aliases      An array of alternate server names.  If set, you will
+                 probably have to handle some manual steps to bring the
+                 host up as part of a pool, involving signing the larger
+                 cert; see:
  
                        http://docs.puppetlabs.com/guides/scaling_multiple_masters.html#before-running-puppet-agent-or-puppet-master
  
-     basedir      Base directory for puppet configuration.  Defaults
-                  to /etc/puppet.
-     ca_server    Certificate authority server.  Defaults to 'UNSET',
-                  which indicates that we won't explicitly set it.
-     certname     Defaults to $::fqdn.
-     config_path  /etc/puppet
-     enc          Are we using an external node classifier?  If so, set
-                  this to the right script name.  Defaults to 'false'.
-     envdir       /etc/puppet/environments
-     env_timeout  180 (seconds)
-     is_ca        Am I the Certificate Authority?  Defaults to false.
-     master       Should we configure the puppet master variables?
+    basedir      Base directory for puppet configuration.  Defaults
+                 to /etc/puppet.
+    ca_server    Certificate authority server.  Defaults to 'UNSET',
+                 which indicates that we will not explicitly set it.
+    certname     Defaults to $::fqdn.
+    config_path  /etc/puppet
+    enc          Are we using an external node classifier?  If so, set
+                 this to the right script name.  Defaults to 'false'.
+    envdir       /etc/puppet/environments
+    env_timeout  180 (seconds)
+    is_ca        Am I the Certificate Authority?  Defaults to false.
+    master       Should we configure the puppet master variables?
+                 Defaults to false.
+    modules      An array of module paths, relative to $basedir/ .
+                 Defaults to [ 'modules' ].
+    no_warnings  Array of strings from which to ignore warnings.
+    port         Which port are we talking on?  Defaults to 8140.
+    reports      Array of reports to send after a puppet run.  Defaults
+                 empty; valid options include 'puppetdb' and 'tagmail'.
+    reporturl    If we are sending an http report, where do we send it?
+                 Defaults to 'UNSET'.
+    run_in_noop  If set, don't make any changes with a puppet run.
                   Defaults to false.
-     modules      An array of module paths, relative to $basedir/ .
-                  Defaults to [ 'modules' ].
-     no_warnings  Array of strings from which to ignore warnings.
-     port         Which port are we talking on?  Defaults to 8140.
-     reports      Array of reports to send after a puppet run.  Defaults
-                  empty; valid options include 'puppetdb' and 'tagmail'.
-     reporturl    If we're sending an http report, where do we send it?
-                  Defaults to 'UNSET'.
-     run_in_noop  If set, don't make any changes with a puppet run.
-                  Defaults to false.
-     server       The main puppet server name.  Required, no default.
-     use_puppetdb If set, turns on puppetdb for storeconfigs.  Defaults
-                  to off.
+    server       The main puppet server name.  Required, no default.
+    use_puppetdb If set, turns on puppetdb for storeconfigs.  Defaults
+                 to off.
 
 ### puppet::master
 
@@ -122,6 +129,8 @@ Parameters:
 
 ## Prerequisites
 
-* puppetlabs/apache
-* puppetlabs/firewall
+* puppetlabs/stdlib
 * saz/rsyslog
+
+* puppetlabs/apache (for mod\_passenger only)
+* puppetlabs/passenger (also for mod\_passenger only)

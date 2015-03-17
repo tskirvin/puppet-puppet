@@ -21,7 +21,6 @@
   "dependencies": [ 
     { "name": "puppetlabs/apache", "version_requirement": ">= 0.9.0" },
     { "name": "puppetlabs/passenger", "version_requirement": ">= 0.0.4" },
-    { "name": "puppetlabs/mysql", "version_requirement": ">= 0.6.1" },
     { "name": "puppetlabs/stdlib", "version_requirement": ">=4.5.1" },
     { "name": "saz/rsyslog", "version_requirement": ">=3.4.0" }
   ]
