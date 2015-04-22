@@ -7,10 +7,11 @@
 #
 #   class { 'puppet::master::hiera': }
 #
-class puppet::master::hiera ( 
+class puppet::master::hiera (
   $config = 'puppet:///modules/puppet/etc/puppet/hiera.yaml'
 ) {
-  include puppet::master
+  require puppet::master
+  validate_string ($config)
 
   ensure_packages ( ['hiera'] )
 

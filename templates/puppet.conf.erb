@@ -5,18 +5,18 @@
   logdir = /var/log/puppet
   rundir = /var/run/puppet
   ssldir = $vardir/ssl
-  <%- if @dns_alt_names -%>
+  <%- if @dns_alt_names && ! @dns_alt_names.empty? -%>
   dns_alt_names = <%= @dns_alt_names.join(', ') %>
   <%- end -%>
-  <%- if @no_warnings -%>
-  disable_warnings = <%= @no_warnings.join(',') %>
+  <%- if @no_warnings && ! @no_warnings.empty? -%>
+  disable_warnings = <%= @no_warnings.join(', ') %>
   <%- end -%>
 <% if @agent -%>
 
 [agent]
   environment = <%= @env %>
   server      = <%= @server %>
-  <%- if @ca_server != 'UNSET' -%>
+  <%- if @ca_server != '' -%>
   ca_server   = <%= @ca_server %>
   <%- end -%>
   classfile   = $vardir/classes.txt
@@ -39,10 +39,11 @@
   environmentpath     = <%= @envdir %>
   environment_timeout = <%= @env_timeout %>
 
+  <%- if @reports && ! @reports.empty? -%>
   # List of reports to run
-  # reports = tagmail,lastcheck,logcache
   reports = <%= @reports.join(',') %>
 
+  <%- end -%>
   # Enable graphing of relationship maps
   graph = true
 
@@ -54,19 +55,19 @@
   ssl_client_verify_header = SSL_CLIENT_VERIFY
 
   # If we have enabled autosign configuration, it's configured here
-  autosign = /etc/puppet/autosign.conf
+  autosign = <%= @config_path %>/autosign.conf
 
-  <%- if @enc != 'UNSET' -%>
+  <%- if @enc != '' -%>
   # Enable an External Node Classifier
   node_terminus = exec
-  external_nodes = <%= enc %>
+  external_nodes = <%= @enc %>
   <%- end -%>
   <%- if @use_puppetdb -%>
   # Enable the puppetdb
   storeconfigs = true
   storeconfigs_backend = puppetdb
   <%- end -%>
-  <%- if @reporturl != 'UNSET' -%>
+  <%- if @reporturl != '' -%>
   reporturl = <%= @reporturl %>
   <%- end -%>
 <%- end -%>

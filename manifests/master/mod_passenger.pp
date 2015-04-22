@@ -5,8 +5,6 @@
 #
 # == Parameters
 #
-#   basedir     Base system directory for the rack configuration; defaults
-#               to /usr/share/puppet/rack .
 #   is_ca       Am I the CA?  Defaults to either the hiera value of
 #               puppet::master::ca (which shares this value), or just false.
 #   port        Which network port are we using?  Defaults to 8140.
@@ -14,6 +12,8 @@
 #               of puppet::config::ca_server, or undef.  Only used when
 #               $is_ca is not set, when we will instead proxy ca requests
 #               to the proper ca server.
+#   rackdir     Base system directory for the rack configuration; defaults
+#               to /usr/share/puppet/rack .
 #
 # == Prerequisites
 #
@@ -28,25 +28,18 @@
 #    }
 #
 class puppet::master::mod_passenger (
-  $basedir     = '/usr/share/puppet/rack',
-  $is_ca       = hiera('puppet::config::is_ca', false),
-  $port        = 8140,
-  $puppetca    = hiera('puppet::config::ca_server', undef)
-) inherits puppet::master {
-  class { 'passenger': }
-  apache::mod { ['headers']: }
+  $is_ca    = hiera('puppet::config::is_ca', false),
+  $port     = 8140,
+  $puppetca = hiera('puppet::config::ca_server', ''),
+  $rackdir  = '/usr/share/puppet/rack'
+) {
+  require passenger
 
-  package { [ 'rack', 'rake' ]: ensure => installed, provider => 'gem' }
+  validate_bool   ($is_ca)
+  validate_string ($rackdir, $puppetca)
+  validate_re     ($port, '^[0-9]+$')
 
-  $rack = '/usr/share/puppet/rack'
-  file { $basedir: ensure => directory }
-  file { "${basedir}/puppetmasterd":        ensure => directory }
-  file { "${basedir}/puppetmasterd/public": ensure => directory }
-  file { "${basedir}/puppetmasterd/tmp":    ensure => directory }
-  file { "${basedir}/puppetmasterd/config.ru":
-    source => '/usr/share/puppet/ext/rack/files/config.ru',
-    owner  => 'puppet';
-  }
+  ensure_resource ('apache::mod', 'headers')
 
   if $is_ca {
     $ssl_chain = '/var/lib/puppet/ssl/ca/ca_crt.pem'
@@ -57,29 +50,45 @@ class puppet::master::mod_passenger (
     ensure_resource ('apache::mod', 'proxy')
   }
 
-  $docroot = "${basedir}/puppetmasterd/public/"
+  package { 'rack': ensure => installed, provider => 'gem' }
+  ensure_packages (['rake'])
+
+  file { $rackdir: ensure => directory }
+  file { "${rackdir}/puppetmasterd":        ensure => directory }
+  file { "${rackdir}/puppetmasterd/public": ensure => directory }
+  file { "${rackdir}/puppetmasterd/tmp":    ensure => directory }
+  file { "${rackdir}/puppetmasterd/config.ru":
+    source => '/usr/share/puppet/ext/rack/files/config.ru',
+    owner  => 'puppet';
+  }
+
+
+  $docroot = "${rackdir}/puppetmasterd/public/"
   apache::vhost { 'puppet':
-    port               => $port,
-    docroot            => $docroot,
-    directories        => [ {
+    port            => $port,
+    docroot         => $docroot,
+    directories     => [ {
       path              => $docroot,
       passenger_enabled => 'on'
     } ],
-    default_vhost      => true,
-    ssl                => true,
-    ssl_cert           => "/var/lib/puppet/ssl/certs/${::fqdn}.pem",
-    ssl_key            => "/var/lib/puppet/ssl/private_keys/${::fqdn}.pem",
-    ssl_chain          => $ssl_chain,
-    ssl_ca             => $ssl_ca,
-    ssl_crl            => '/var/lib/puppet/ssl/crl.pem',
-    options            => [],
-    custom_fragment    => template('puppet/passenger-fragment.erb'),
+    default_vhost   => true,
+    ssl             => true,
+    ssl_cert        => "/var/lib/puppet/ssl/certs/${::fqdn}.pem",
+    ssl_key         => "/var/lib/puppet/ssl/private_keys/${::fqdn}.pem",
+    ssl_chain       => $ssl_chain,
+    ssl_ca          => $ssl_ca,
+    ssl_crl         => '/var/lib/puppet/ssl/crl.pem',
+    options         => [],
+    custom_fragment => template('puppet/passenger-fragment.erb'),
   }
 
   ## We will not be running a standard 'puppetmaster' process on this,
   ## everything is taken care of by apache (which does have to be
   ## started elsewhere).  We'll also set up a notification so that when
   ## puppetmaster would be restarted, we'll notify/poke apache.
-  Service['puppetmaster'] { ensure => stopped, enable => false }
-  Service['puppetmaster'] ~> Class['apache::service']
+  service { 'puppetmaster':
+    ensure => stopped,
+    enable => false,
+    notify => Class['apache::service']
+  }
 }

@@ -7,11 +7,8 @@
 #
 # == Parameters
 #
-#   contact   Array of email addresses that should be contacted with the
-#             'tagmail' report type.  Defaults to an empty array.
 #   is_ca     Are we the certificate authority?  Defaults to false; this is
 #             passed to puppet::master::{webrick|mod_passenger}.
-#   hiera     Should we load puppet::master::hiera ?  Default: false.
 #   logdir    Set up logging, pointing at this log directory.  Any logs
 #             go to ${logdir}/puppetmaster.log, in addition to syslog.
 #             Defaults to 'false', so no additional logging will happen.
@@ -26,27 +23,17 @@
 #   class { 'puppet::master': hiera => true, web => 'passenger' }
 #
 class puppet::master (
-  $contact = [],
-  $is_ca   = hiera('puppet::config::is_ca', false),
-  $logdir  = false,
-  $hiera   = false,
-  $web     = 'webrick'
+  $is_ca  = hiera('puppet::config::is_ca', false),
+  $logdir = '',
+  $web    = 'webrick'
 ) {
-  if ($hiera) { class { 'puppet::master::hiera': } }
+  validate_bool ($is_ca)
+  validate_string ($logdir, $web)
 
   case $web {
-    'passenger': { $webclass = 'puppet::master::mod_passenger' }
-    'webrick':   { $webclass = 'puppet::master::webrick' }
+    'passenger': { require 'puppet::master::mod_passenger' }
+    'webrick':   { require 'puppet::master::webrick' }
     default:     { fail ("unknown web class ${web}") }
-  }
-  class { $webclass: is_ca => $is_ca }
-
-  service { 'puppetmaster': }
-
-  if ($contact) {
-    validate_array($contact)
-    $email = join($contact, ', ')
-    file { '/etc/puppet/tagmail.conf': content => "all: ${email}" }
   }
 
   if ($logdir) {

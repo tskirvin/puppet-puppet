@@ -1,8 +1,8 @@
 # puppet::master::webrick
 #
-#   Make sure that the default puppetmaster is running, and
-#   starts on boot.  Nothing much to this one.
+#   Make sure that the default puppetmaster is running, and starts on boot.
+#   Nothing much to this one.
 #
-class puppet::master::webrick ($is_ca = false) inherits puppet::master {
-  Service['puppetmaster'] { ensure => running, enable => true }
+class puppet::master::webrick () inherits puppet::master {
+  service { 'puppetmaster': ensure => running, enable => true }
 }

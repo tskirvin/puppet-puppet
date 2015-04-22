@@ -14,7 +14,7 @@
   SSLVerifyClient         optional
   SSLVerifyDepth          1
   SSLOptions              +StdEnvVars +ExportCertData
-<% unless @is_ca -%>
+<% if ! @is_ca && @puppetca != '' -%>
 
   ## We are not the CA, so proxy the connections elsewhere.
   SSLProxyEngine On

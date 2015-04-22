@@ -11,6 +11,7 @@
 #
 #    cron_command   Command to run if we're running via cron.  The default
 #                   should be looked at.
+#    cron_user      Defaults to 'root'.
 #    daemon_name    If we're running as a daemon, what is the daemon name?
 #                   Defaults to 'puppet'.
 #    logdir         Set up logging, pointing at this log directory.  Any
@@ -35,20 +36,27 @@
 #
 class puppet::agent (
   $cron_command = '/usr/bin/puppet agent --onetime --ignorecache --no-daemonize --no-usecacheonfailure --detailed-exitcodes --no-splay',
+  $cron_user    = 'root',
   $daemon_name  = 'puppet',
-  $logdir       = false,
+  $logdir       = '',
   $run_at_boot  = false,
   $run_in_noop  = false,
   $run_interval = '30',
   $run_method   = 'service'
-) inherits puppet::config {
+) {
+  require puppet::config
+
+  validate_bool($run_at_boot, $run_in_noop)
+  validate_string($run_method, $daemon_name, $cron_command, $cron_user, $logdir)
+
+  if $run_in_noop { $my_cron_command = "${cron_command} --noop" }
+  else            { $my_cron_command = $cron_command }
+
   case $run_method {
     'service': {
       $daemon_ensure    = 'running'
       $daemon_enable    = true
       $cron_ensure      = 'absent'
-      $my_cron_command  = undef
-      $cron_user        = undef
       $cron_hour        = undef
       $cron_minute      = undef
     }
@@ -58,17 +66,11 @@ class puppet::agent (
       $cron_run_one  = fqdn_rand($run_interval)
       $cron_run_two  = fqdn_rand($run_interval) + 30
       $cron_ensure   = 'present'
-      if $run_in_noop {
-        $my_cron_command = "${cron_command} --noop"
-      } else {
-        $my_cron_command = $cron_command
-      }
-      $cron_user     = 'root'
       $cron_hour     = '*'
       $cron_minute   = [$cron_run_one, $cron_run_two]
     }
     default: {
-      fail ("puppet::agent::run_method is ${run_method}; must be 'service' or 'cron'.")
+      fail ("run_method is ${run_method}; must be 'service' or 'cron'.")
     }
   }
 

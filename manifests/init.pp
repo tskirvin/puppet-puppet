@@ -1,7 +1,5 @@
-# == Class: puppet
+# puppet
 #
-# Full description of class puppet here.
+#   Just invokes puppet::config.
 #
-class puppet {
-
-}
+class puppet { include puppet::config }

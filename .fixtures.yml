@@ -1,0 +1,19 @@
+fixtures:
+  repositories:
+    apache:
+      repo: 'https://github.com/puppetlabs/puppetlabs-apache.git'
+      ref:  '0.9.0'
+    concat:
+      repo: 'https://github.com/puppetlabs/puppetlabs-concat'
+      ref:  '1.2.1'
+    passenger:
+      repo: 'https://github.com/puppetlabs/puppetlabs-passenger.git'
+      ref:  '0.2.0'
+    rsyslog: 
+      repo: 'https://github.com/saz/puppet-rsyslog'
+      ref:  'v3.4.0'
+    stdlib: 
+      repo: 'https://github.com/puppetlabs/puppetlabs-stdlib.git'
+      ref:  '4.1.0'
+  symlinks:
+    puppet: '#{source_dir}'
