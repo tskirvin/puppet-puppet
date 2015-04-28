@@ -9,10 +9,10 @@ fixtures:
     passenger:
       repo: 'https://github.com/puppetlabs/puppetlabs-passenger.git'
       ref:  '0.2.0'
-    rsyslog: 
+    rsyslog:
       repo: 'https://github.com/saz/puppet-rsyslog'
       ref:  'v3.4.0'
-    stdlib: 
+    stdlib:
       repo: 'https://github.com/puppetlabs/puppetlabs-stdlib.git'
       ref:  '4.1.0'
   symlinks:

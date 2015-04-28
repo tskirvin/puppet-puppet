@@ -9,7 +9,7 @@
 
   ## Additional SSL configuration for passenger to work right (especially
   ## w.r.t. /etc/puppet/auth.conf - I don't know what's going on there)
-  SSLProtocol             All -SSLv2
+  SSLProtocol             All -SSLv2 -SSLv3
   SSLCipherSuite          HIGH:!ADH:RC4+RSA:-MEDIUM:-LOW:-EXP
   SSLVerifyClient         optional
   SSLVerifyDepth          1

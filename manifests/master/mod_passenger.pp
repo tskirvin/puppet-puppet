@@ -33,7 +33,7 @@ class puppet::master::mod_passenger (
   $puppetca = hiera('puppet::config::ca_server', ''),
   $rackdir  = '/usr/share/puppet/rack'
 ) {
-  require passenger
+  include passenger
 
   validate_bool   ($is_ca)
   validate_string ($rackdir, $puppetca)
@@ -51,7 +51,6 @@ class puppet::master::mod_passenger (
   }
 
   package { 'rack': ensure => installed, provider => 'gem' }
-  ensure_packages (['rake'])
 
   file { $rackdir: ensure => directory }
   file { "${rackdir}/puppetmasterd":        ensure => directory }

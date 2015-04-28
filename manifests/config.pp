@@ -12,7 +12,7 @@
 #                 handle some manual steps to bring the host up as part of a
 #                 pool, involving signing the larger cert; see:
 #                      http://docs.puppetlabs.com/guides/scaling_multiple_masters.html#before-running-puppet-agent-or-puppet-master
-#    ca_server    Maps to the ca_server field in the [agent] block if 
+#    ca_server    Maps to the ca_server field in the [agent] block if
 #                 non-empty.  Defaults to an empty string,
 #    certname     Maps to the certname field in [main].  Defaults to $::fqdn.
 #    config_path  /etc/puppet

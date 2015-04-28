@@ -31,8 +31,8 @@ class puppet::master (
   validate_string ($logdir, $web)
 
   case $web {
-    'passenger': { require 'puppet::master::mod_passenger' }
-    'webrick':   { require 'puppet::master::webrick' }
+    'passenger': { include 'puppet::master::mod_passenger' }
+    'webrick':   { include 'puppet::master::webrick' }
     default:     { fail ("unknown web class ${web}") }
   }
 

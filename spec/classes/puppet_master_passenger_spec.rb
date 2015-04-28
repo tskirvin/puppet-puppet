@@ -13,9 +13,6 @@ describe 'puppet::master::mod_passenger' do
     it 'should install rack package' do
       should contain_package('rack')
     end
-    it 'should install rake package' do
-      should contain_package('rake')
-    end
     it 'should clone config.ru' do
       should contain_file('/usr/share/puppet/rack/puppetmasterd/config.ru').
         with(
