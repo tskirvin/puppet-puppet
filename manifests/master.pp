@@ -11,7 +11,8 @@
 #             passed to puppet::master::{webrick|mod_passenger}.
 #   logdir    Set up logging, pointing at this log directory.  Any logs
 #             go to ${logdir}/puppetmaster.log, in addition to syslog.
-#             Defaults to 'false', so no additional logging will happen.
+#             Defaults to an empty string, so no additional logging will
+#             happen.
 #   web       Which web server are we going to use to share the content with
 #             our clients?  Possible values:
 #

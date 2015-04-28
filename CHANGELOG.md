@@ -1,5 +1,11 @@
 ## Current
 
+### [1.1.1]
+
+* Documentation fixes
+* Documenting explicit support for RedHat instead of just Scientific Linux
+* metadata.json - updates to better match upstream standards
+
 ### [1.1.0]
 
 * Wrote a full test suite.
