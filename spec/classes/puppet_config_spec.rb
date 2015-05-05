@@ -518,6 +518,39 @@ describe 'puppet::config' do
     end # bad server type
   end # server
 
+  ### timeout ###
+
+  context 'timeout' do
+    context 'enabled' do
+      let(:params) {{ :timeout => 'testing' }}
+      it 'should enable timeout' do
+        should contain_file('puppet.conf').
+          with_content(/^  configtimeout\s+= testing$/)
+      end # should enable timeout
+    end
+
+    context 'disabled' do
+      let(:params) {{ :timeout => '' }}
+      it 'should not enable timeout' do
+        should contain_file('puppet.conf').
+          without_content(/^  configtimeout\s+= /)
+      end # should not enable timeout
+    end
+
+    context 'default' do
+      let(:params) {{ }}
+      it 'should not enable timeout' do
+        should contain_file('puppet.conf').
+          without_content(/^  configtimeout\s+= /)
+      end # should not enable timeout
+    end
+
+    context 'bad' do
+      let(:params) {{ :timeout => false }}
+      it { should raise_error(Puppet::Error, /is not a string/) }
+    end
+  end # timeout
+
   ### use_puppetdb ###
   
   context 'use_puppetdb' do

@@ -37,6 +37,8 @@
 #    run_in_noop  If set, don't make any changes with a puppet run.
 #                 Defaults to false.
 #    server       The main puppet server name.  Required, no default.
+#    timeout      How long to wait for a catalog from the master?  No default.
+#                 Corresponds to 'configtimeout'.
 #    use_puppetdb If set, turns on puppetdb for storeconfigs.  Defaults
 #                 to off.
 #
@@ -65,12 +67,13 @@ class puppet::config (
   $reporturl    = '',
   $run_in_noop  = false,
   $server       = '',
+  $timeout      = '',
   $use_puppetdb = false
 ) {
   validate_array   ($aliases, $no_warnings, $reports)
   validate_bool    ($agent, $is_ca, $master, $run_in_noop, $use_puppetdb)
   validate_string  ($ca_server, $certname, $config_path, $enc, $env,
-                    $envdir, $reporturl, $server)
+                    $envdir, $reporturl, $server, $timeout)
 
   validate_re ($env,    '^\S+$', 'env must be a non-empty word')
   validate_re ($server, '^\S+$', 'server must be a non-empty word')

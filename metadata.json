@@ -1,6 +1,6 @@
 {
   "name": "tskirvin-puppet",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "author": "Tim Skirvin <tskirvin@fnal.gov>",
   "summary": "manage puppet.conf, puppet runs, and puppet masters",
   "license": "Apache-2.0",
@@ -19,7 +19,7 @@
     },
     {
       "operatingsystem": "Debian",
-      "operatingsystemmajrelease": [ "6", "7" ]
+      "operatingsystemmajrelease": [ "6", "7", "8" ]
     }
   ],
   "dependencies": [

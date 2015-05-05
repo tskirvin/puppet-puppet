@@ -11,6 +11,9 @@
   <%- if @no_warnings && ! @no_warnings.empty? -%>
   disable_warnings = <%= @no_warnings.join(', ') %>
   <%- end -%>
+  <%- if @timeout != '' -%>
+  configtimeout = <%= @timeout %>
+  <%- end -%>
 <% if @agent -%>
 
 [agent]

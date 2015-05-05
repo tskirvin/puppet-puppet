@@ -73,6 +73,8 @@ Parameters:
     run_in_noop  If set, don't make any changes with a puppet run.
                  Defaults to false.
     server       The main puppet server name.  Required, no default.
+    timeout      How long to wait for a catalog from the master?  No default.
+                 Corresponds to 'configtimeout'.
     use_puppetdb If set, turns on puppetdb for storeconfigs.  Defaults
                  to off.
 
