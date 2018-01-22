@@ -1,8 +1,8 @@
 # puppet-puppet
 
 This puppet module is meant to manage /etc/puppet/puppet.conf and its
-family.  It provides hooks for rsyslog + logrotate, supports servers
-running either mod\_passenger and webrick, and is configurable via hiera.
+family.  It provides hooks for rsyslog + logrotate, and is configurable
+via hiera.
 
 This module began life as a merge between
 some old puppet code, the [ghoneycutt puppet
