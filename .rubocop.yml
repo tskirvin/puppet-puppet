@@ -104,5 +104,16 @@ Style/IfUnlessModifier:
 Style/SymbolProc:
   Enabled: false
 
+## Tim additions to work with my world and this module's long-ish history
+Layout/DotPosition: 
+  Enabled: false    # doesn't work with Ruby 1.8
+Layout/EmptyLinesAroundBlockBody:
+  Enabled: false    # easier to read regardless
+RSpec/ImplicitExpect:
+  Enabled: false    # was already using the old format
 Style/HashSyntax:
-  EnforcedStyle: ruby18
+  EnforcedStyle: no_mixed_keys  # doesn't work with Ruby 1.8
+Style/RegexpLiteral: 
+  Enabled: false  # was already using the old format
+Style/TrailingCommaInArguments:
+  Enabled: false  # doesn't work with Ruby 1.8
