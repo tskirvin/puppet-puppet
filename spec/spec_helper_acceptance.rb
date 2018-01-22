@@ -4,7 +4,7 @@ require 'beaker-rspec/helpers/serverspec'
 unless ENV['RS_PROVISION'] == 'no' or ENV['BEAKER_provision'] == 'no'
   # This will install the latest available package on el and deb based
   # systems fail on windows and osx, and install via gem on other *nixes
-  foss_opts = {:default_action => 'gem_install'}
+  foss_opts = { :default_action => 'gem_install' }
 
   if default.is_pe?; then
     install_pe;
@@ -29,7 +29,7 @@ RSpec.configure do |c|
     # Install module and dependencies
     puppet_module_install(:source => proj_root, :module_name => 'puppet')
     hosts.each do |host|
-      on host, puppet('module', 'install', 'puppetlabs-stdlib'), {:acceptable_exit_codes => [0, 1]}
+      on host, puppet('module', 'install', 'puppetlabs-stdlib'), { :acceptable_exit_codes => [0, 1] }
     end
   end
 end

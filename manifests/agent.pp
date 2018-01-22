@@ -14,10 +14,7 @@
 #    cron_user      Defaults to 'root'.
 #    daemon_name    If we're running as a daemon, what is the daemon name?
 #                   Defaults to 'puppet'.
-#    logdir         Set up logging, pointing at this log directory.  Any
-#                   logs go to ${logdir}/puppet.log, in addition to syslog.
-#                   Defaults to 'false', so no additional logging will happen.
-#    run_at_boot    Set this if you're running in 'cron' mode.
+#    run_at_boot    Disable this if you're running in 'cron' mode.
 #    run_in_noop    If set, we won't actually make any changes.  Defaults to
 #                   false.
 #    run_interval   If running via cron, how often should we run?  Defaults
@@ -26,8 +23,7 @@
 #
 # == Usage
 #
-#    class { 'puppet::agent': }
-#    class { 'puppet::agent': logdir => '/var/log/puppet' }
+#    include puppet::agent
 #
 # == Notes
 #
@@ -35,19 +31,15 @@
 #   may not apply to us.
 #
 class puppet::agent (
-  $cron_command = '/usr/bin/puppet agent --onetime --ignorecache --no-daemonize --no-usecacheonfailure --detailed-exitcodes --no-splay',
-  $cron_user    = 'root',
-  $daemon_name  = 'puppet',
-  $logdir       = '',
-  $run_at_boot  = false,
-  $run_in_noop  = false,
-  $run_interval = '30',
-  $run_method   = 'service'
+  String $cron_command = '/opt/puppetlabs/bin/puppet agent -t',
+  String $cron_user    = 'root',
+  String $daemon_name  = 'puppet',
+  Boolean $run_at_boot  = true,
+  Boolean $run_in_noop  = false,
+  Integer $run_interval = 30,
+  Enum['service', 'cron', 'manual'] $run_method = 'cron'
 ) {
   require puppet::config
-
-  validate_bool($run_at_boot, $run_in_noop)
-  validate_string($run_method, $daemon_name, $cron_command, $cron_user, $logdir)
 
   if $run_in_noop { $my_cron_command = "${cron_command} --noop" }
   else            { $my_cron_command = $cron_command }
@@ -69,9 +61,14 @@ class puppet::agent (
       $cron_hour     = '*'
       $cron_minute   = [$cron_run_one, $cron_run_two]
     }
-    default: {
-      fail ("run_method is ${run_method}; must be 'service' or 'cron'.")
+    'manual': {
+      $daemon_ensure = 'stopped'
+      $daemon_enable = false
+      $cron_ensure   = 'absent'
+      $cron_hour     = undef
+      $cron_minute   = undef
     }
+    default: { fail ("run_method: invalid value (${run_method})") }
   }
 
   if $run_at_boot { $at_boot_ensure = 'present' }
@@ -83,11 +80,12 @@ class puppet::agent (
   }
 
   cron { 'puppet_agent':
-    ensure  => $cron_ensure,
-    command => $my_cron_command,
-    user    => $cron_user,
-    hour    => $cron_hour,
-    minute  => $cron_minute,
+    ensure      => $cron_ensure,
+    command     => $my_cron_command,
+    environment => 'MAILTO=""',
+    user        => $cron_user,
+    hour        => $cron_hour,
+    minute      => $cron_minute,
   }
 
   cron { 'puppet_agent_once_at_boot':
@@ -95,22 +93,5 @@ class puppet::agent (
     command => $my_cron_command,
     user    => $cron_user,
     special => 'reboot',
-  }
-
-  if ($logdir) {
-    validate_absolute_path ($logdir)
-    rsyslog::snippet { '00-puppet':
-      ensure  => present,
-      content => "if \$programname == 'puppet-agent' then -${logdir}/puppet.log\n& ~"
-    }
-    file { "${logdir}/puppet.log":
-      owner => 'puppet',
-      group => 'puppet',
-      mode  => '0660'
-    }
-    file { '/etc/logrotate.d/puppet':
-      ensure  => present,
-      content => template('puppet/logrotate-puppet.erb')
-    }
   }
 }

@@ -1,76 +1,84 @@
-# This file is being maintained by Puppet.
-# DO NOT EDIT
+# <%= @config_path %>/puppet.conf
+# Puppet configuration, managed through puppet::config, hiera variables,
+# and the template puppet.conf.erb.
 
 [main]
-  logdir = /var/log/puppet
-  rundir = /var/run/puppet
-  ssldir = $vardir/ssl
   <%- if @dns_alt_names && ! @dns_alt_names.empty? -%>
-  dns_alt_names = <%= @dns_alt_names.join(', ') %>
+    dns_alt_names = <%= @dns_alt_names.join(', ') %>
   <%- end -%>
   <%- if @no_warnings && ! @no_warnings.empty? -%>
-  disable_warnings = <%= @no_warnings.join(', ') %>
+    disable_warnings = <%= @no_warnings.join(', ') %>
   <%- end -%>
-  <%- if @timeout != '' -%>
-  configtimeout = <%= @timeout %>
+  <%- if @extra_main && ! @extra_main.empty? -%>
+
+    # extra lines, from extra_main
+    <%= @extra_main.join("\n    ") %>
   <%- end -%>
 <% if @agent -%>
 
 [agent]
-  environment = <%= @env %>
-  server      = <%= @server %>
-  <%- if @ca_server != '' -%>
-  ca_server   = <%= @ca_server %>
+    certname    = <%= @certname %>
+    environment = <%= @env %>
+  <%- if @srv_domain -%>
+    use_srv_records = true
+    srv_domain  = <%= @server %>
+  <%- else -%>
+    server      = <%= @server %>
   <%- end -%>
-  classfile   = $vardir/classes.txt
-  localconfig = $vardir/localconfig
-  certname    = <%= @certname %>
-
-  report      = true
-  graph       = true
-  pluginsync  = true
+  <%- if @ca_server != '' -%>
+    ca_server   = <%= @ca_server %>
+  <%- end -%>
+    classfile   = $vardir/classes.txt
   <%- if @run_in_noop -%>
-  noop        = true
+    noop        = true
+  <%- end -%>
+  <%- if @extra_agent && ! @extra_agent.empty? -%>
+
+    # extra lines, from extra_agent
+    <%= @extra_agent.join("\n    ") %>
+  <%- end -%>
+
+  <%- if @use_cache %>
+    usecacheonfailure = true
+  <%- else -%>
+    usecacheonfailure = false
   <%- end -%>
 <%- end -%>
 <%- if @master -%>
 
 [master]
-  ca          = <%= @is_ca ? "true" : "false" %>
-
-  # Directory Environments
-  environmentpath     = <%= @envdir %>
-  environment_timeout = <%= @env_timeout %>
-
+    # Directory Environments
+    environmentpath     = <%= @envdir %>
+    environment_timeout = <%= @env_timeout %>
   <%- if @reports && ! @reports.empty? -%>
-  # List of reports to run
-  reports = <%= @reports.join(',') %>
 
+    # List of reports to run
+    reports = <%= @reports.join(',') %>
   <%- end -%>
-  # Enable graphing of relationship maps
-  graph = true
 
-  # Location of the certificate revocation list
-  cacrl = /var/lib/puppet/ssl/crl.pem
-
-  # Proper ssl variable passing for apache
-  ssl_client_header        = SSL_CLIENT_S_DN
-  ssl_client_verify_header = SSL_CLIENT_VERIFY
-
-  # If we have enabled autosign configuration, it's configured here
-  autosign = <%= @config_path %>/autosign.conf
-
+    ca          = <%= @is_ca ? "true" : "false" %>
+  <%- if @is_ca && @autosign != '' -%>
+    autosign    = <%= @autosign %>
+  <%- end -%>
   <%- if @enc != '' -%>
-  # Enable an External Node Classifier
-  node_terminus = exec
-  external_nodes = <%= @enc %>
+
+    # Enable an External Node Classifier
+    node_terminus  = exec
+    external_nodes = <%= @enc %>
   <%- end -%>
   <%- if @use_puppetdb -%>
-  # Enable the puppetdb
-  storeconfigs = true
-  storeconfigs_backend = puppetdb
+
+    # Enable the puppetdb
+    storeconfigs         = true
+    storeconfigs_backend = puppetdb
   <%- end -%>
   <%- if @reporturl != '' -%>
-  reporturl = <%= @reporturl %>
+
+    reporturl = <%= @reporturl %>
+  <%- end -%>
+  <%- if @extra_master && ! @extra_master.empty? -%>
+
+    # extra lines, from extra_master
+    <%= @extra_master.join("\n    ") %>
   <%- end -%>
 <%- end -%>

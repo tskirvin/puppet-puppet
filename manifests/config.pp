@@ -1,30 +1,34 @@
 # puppet::config
 #
-#   Manage /etc/puppet/puppet.conf (or equivalent) for both agent and master
+#   Manage /etc/puppetlabs/puppet/puppet.conf for both agent and master
 #   use.  It is designed to be configured via hiera.
 #
 # == Parameters
 #
-#    agent        Should we configure the puppet agent variables?
-#                 Defaults to true.
+#    agent        Configure the [agent] section?  Default: true
 #    aliases      An array of alternate server names, mapping to dns_alt_names
 #                 (along with $certname).  If set, you'll probably have to
 #                 handle some manual steps to bring the host up as part of a
 #                 pool, involving signing the larger cert; see:
 #                      http://docs.puppetlabs.com/guides/scaling_multiple_masters.html#before-running-puppet-agent-or-puppet-master
+#    autosign     Script to run for puppet autosigning in [master].   Default: 
+#                 empty.
 #    ca_server    Maps to the ca_server field in the [agent] block if
 #                 non-empty.  Defaults to an empty string,
-#    certname     Maps to the certname field in [main].  Defaults to $::fqdn.
-#    config_path  /etc/puppet
+#    certname     'certname' field in [main].  Default: $::fqdn.
+#    config_path  /etc/puppetlabs/puppet
 #    enc          Are we using an external node classifier?  If so, set
 #                 this to the right script name.  Defaults to 'false'.
-#    envdir       /etc/puppet/environments
+#    env
+#    envdir       /etc/puppetlabs/code/environments
+#    extra_agent
+#    extra_main
+#    extra_master
 #    env          Default environment; no default, must be set.
 #    env_timeout  180 (seconds)
 #    is_ca        Am I the Certificate Authority?  Corresponds to the 'ca'
-#                 field.  Defaults to false.
-#    master       Should we configure the puppet master variables?
-#                 Defaults to false.
+#                 field.  Default: false
+#    master       Configure the [master] section?  Default: false
 #    no_warnings  Array of strings from which to ignore warnings; maps to the
 #                 'disable_warnings' field.  Empty by default.
 #    port         Which port are we talking on?  Defaults to 8140.  Note that
@@ -36,9 +40,9 @@
 #                 Defaults to an empty string.
 #    run_in_noop  If set, don't make any changes with a puppet run.
 #                 Defaults to false.
+#    srv_domain
 #    server       The main puppet server name.  Required, no default.
-#    timeout      How long to wait for a catalog from the master?  No default.
-#                 Corresponds to 'configtimeout'.
+#    use_cache    false
 #    use_puppetdb If set, turns on puppetdb for storeconfigs.  Defaults
 #                 to off.
 #
@@ -50,39 +54,31 @@
 #   }
 #
 class puppet::config (
-  $agent        = true,
-  $aliases      = [],
-  $ca_server    = '',
-  $certname     = $::fqdn,
-  $config_path  = '/etc/puppet',
-  $enc          = '',
-  $env          = '',
-  $envdir       = '/etc/puppet/environments',
-  $env_timeout  = 180,
-  $is_ca        = false,
-  $master       = false,
-  $no_warnings  = [],
-  $port         = 8140,
-  $reports      = [],
-  $reporturl    = '',
-  $run_in_noop  = false,
-  $server       = '',
-  $timeout      = '',
-  $use_puppetdb = false
+  String[1] $env,
+  String[1] $server,
+  Boolean $agent        = true,
+  Array   $aliases      = [],
+  String  $autosign     = '',
+  String  $ca_server    = '',
+  String  $certname     = $::fqdn,
+  String  $config_path  = '/etc/puppetlabs/puppet',
+  String  $enc          = '',
+  String  $envdir       = '/etc/puppetlabs/code/environments',
+  Integer $env_timeout  = 180,
+  Array   $extra_agent  = [],
+  Array   $extra_main   = [],
+  Array   $extra_master = [],
+  Boolean $is_ca        = false,
+  Boolean $master       = false,
+  Array   $no_warnings  = [],
+  Integer $port         = 8140,
+  Array   $reports      = [],
+  String  $reporturl    = '',
+  Boolean $run_in_noop  = false,
+  Boolean $srv_domain   = false,
+  Boolean $use_cache    = false,
+  Boolean $use_puppetdb = false
 ) {
-  validate_array   ($aliases, $no_warnings, $reports)
-  validate_bool    ($agent, $is_ca, $master, $run_in_noop, $use_puppetdb)
-  validate_string  ($ca_server, $certname, $config_path, $enc, $env,
-                    $envdir, $reporturl, $server, $timeout)
-
-  validate_re ($env,    '^\S+$', 'env must be a non-empty word')
-  validate_re ($server, '^\S+$', 'server must be a non-empty word')
-
-  # just until we have validate_numeric in stdlib
-  # validate_numeric ($env_timeout, $port)
-  validate_re ($env_timeout, '^[0-9]+$')
-  validate_re ($port, '^[0-9]+$')
-
   if count($aliases) > 0 {
     $dns_alt_names = concat ([$::fqdn], $aliases)
   }
@@ -93,12 +89,5 @@ class puppet::config (
     owner   => 'root',
     group   => 'root',
     mode    => '0644'
-  }
-
-  file { '/var/log/puppet':
-    ensure => directory,
-    owner  => 'puppet',
-    group  => 'puppet',
-    mode   => '0750'
   }
 }

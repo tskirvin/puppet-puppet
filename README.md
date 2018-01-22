@@ -8,7 +8,7 @@ This module began life as a merge between
 some old puppet code, the [ghoneycutt puppet
 module](https://github.com/ghoneycutt/puppet-module-puppet), and a lot
 of local custom work.  It's currently in production across at least two
-sites, one large (~1200 nodes) and one small (~3 nodes).
+sites, one large (~2700 nodes) and one small (~3 nodes).
 
 ## Classes
 
@@ -73,58 +73,18 @@ Parameters:
     run_in_noop  If set, don't make any changes with a puppet run.
                  Defaults to false.
     server       The main puppet server name.  Required, no default.
-    timeout      How long to wait for a catalog from the master?  No default.
-                 Corresponds to 'configtimeout'.
     use_puppetdb If set, turns on puppetdb for storeconfigs.  Defaults
                  to off.
 
-### puppet::master
+### puppet::puppetserver
 
-Configures a puppet master, either with webrick or mod\_passenger.
+Start the `puppetserver` process.  Currently not very configurable.
 
-Parameters:
+### puppet::syslog
 
-    is_ca     Are we the certificate authority?  Defaults to false; this is
-              passed to puppet::master::{webrick|mod_passenger}.
-    logdir    Set up logging, pointing at this log directory.  Any logs
-              go to ${logdir}/puppetmaster.log, in addition to syslog.
-              Defaults to an empty string, so no additional logging will
-              happen.
-    web       Which web server are we going to use to share the content with
-              our clients?  Possible values:
+Set up syslog to log to `/var/log/puppet.log` (configurable).
 
-                webrick    puppet::master::webrick       DEFAULT
-                passenger  puppet::master::mod_passenger
+# Prerequisites
 
-#### puppet::master::hiera
-
-Configures /etc/puppet/hiera.yaml, based on a local flat file.  This gets
-loaded by puppet::master.  This should probably go somewhere else in the
-future; consider it deprecated.
-
-#### puppet::master::mod\_passenger
-
-Use mod\_passenger (read: apache) for the puppetmaster.
-
-Parameters:
-
-    is_ca       Am I the CA?  Defaults to either the hiera value of
-                puppet::master::ca (which shares this value), or just false.
-    port        Which network port are we using?  Defaults to 8140.
-    puppetca    What is the puppetca?  Defaults to either the hiera value
-                of puppet::config::ca_server, or undef.  Only used when
-                $is_ca is not set, when we will instead proxy ca requests
-                to the proper ca server.
-    rackdir     Base system directory for the rack configuration; defaults
-                to /usr/share/puppet/rack .
-
-#### puppet::master::webrick
-
-Use webrick (the "default" way) for the puppetmaster.
-
-## Prerequisites
-
-* puppetlabs/apache (for mod\_passenger only)
-* puppetlabs/passenger (also for mod\_passenger only)
 * puppetlabs/stdlib
 * saz/rsyslog (if you want to enable logging)

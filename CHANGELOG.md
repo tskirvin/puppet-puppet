@@ -1,10 +1,5 @@
 ## Current
 
-### [1.1.2]
-
-* Added a 'timeout' parameter for puppet::config
-* Added support for Debian 8 (well, it was already there)
-
 ### [1.1.1]
 
 * Documentation fixes

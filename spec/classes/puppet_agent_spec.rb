@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-cron_command = '/usr/bin/puppet agent --onetime --ignorecache --no-daemonize --no-usecacheonfailure --detailed-exitcodes --no-splay'
-cron_command_noop = cron_command + " --noop"
+cron_command = '/opt/puppetlabs/bin/puppet agent -t'
+cron_command_noop = cron_command + ' --noop'
 
 describe 'puppet::agent' do
-  let(:facts) {{ :osfamily => 'RedHat', :operatingsystemmajrelease => '6' }}
+  let(:facts) { { :osfamily => 'RedHat', :operatingsystemmajrelease => '6' } }
 
   context 'default params check' do
     it 'should include puppet::config' do
@@ -14,21 +14,19 @@ describe 'puppet::agent' do
     it 'should have default service parameters' do
       should contain_service('puppet_agent_daemon').with(
         :name   => 'puppet',
-        :enable => true
+        :enable => false
       )
     end
     it 'should have default cron parameters' do
       should contain_cron('puppet_agent').with(
-        :ensure  => 'absent',
+        :ensure  => 'present',
         :user    => 'root',
-        :command => cron_command,
-        :hour    => nil,
-        :minute  => nil
+        :command => cron_command
       )
     end
     it 'should have default on-boot cron parameters' do
       should contain_cron('puppet_agent_once_at_boot').with(
-        :ensure  => 'absent',
+        :ensure  => 'present',
         :special => 'reboot',
         :user    => 'root',
         :command => cron_command
@@ -100,41 +98,8 @@ describe 'puppet::agent' do
   context 'run as something invalid' do
     let(:params) {{ :run_method => 'foo' }}
     it 'should fail' do
-      should raise_error(Puppet::Error, /run_method is foo; must be 'service' or 'cron'/)
+      should raise_error(Puppet::Error, /expects a match for Enum/)
     end
   end # run as something invalid
-
-  context 'logdir check' do
-    context 'default values' do
-      let(:params) {{ :logdir => '/foo' }}
-
-      it 'should create puppet.log' do
-        should contain_file('/foo/puppet.log').with(
-          :owner => 'puppet',
-          :group => 'puppet',
-          :mode  => '0660'
-        )
-      end # should create puppet.log
-
-      it 'should create /etc/rsyslog.d/00-puppet' do
-        should contain_rsyslog__snippet('00-puppet').
-          with_content(/\/foo\/puppet.log/)
-      end # should create /etc/rsyslog.d/00-puppet
-
-      it 'should create /etc/logrotate.d/puppet' do
-        should contain_file('/etc/logrotate.d/puppet').
-          with_content(/^\/foo\/puppet.log /)
-      end # should create /etc/logrotate.d/puppet
-
-    end
-
-    context 'bad logdir' do
-      let(:params) {{ :logdir => '../foobar' }}
-      it 'not an absolute path' do
-        should raise_error(Puppet::Error, /is not an absolute path/)
-      end
-    end # bad logdir
-
-  end # logdir check
 
 end # puppet::agent
