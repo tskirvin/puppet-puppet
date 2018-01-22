@@ -1,5 +1,15 @@
 ## Current
 
+### [1.2.0]
+
+* Puppet 4 support
+* `puppet::config` - lots of new parameters, especially `extra_master`,
+  `extra_main`, and `extra_agent`
+* removed `manifests/master.pp` and `manifests/master/*` as no longer useful
+* `manifests/puppetserver.pp` exists in basic form
+* syslog stuff moved from `agent.pp` to `syslog.pp`
+* Test suite works in modern world
+
 ### [1.1.1]
 
 * Documentation fixes
