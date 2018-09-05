@@ -69,7 +69,7 @@ describe 'puppet::agent' do
   end # run as a cronjob
 
   context 'run_at_boot cronjob' do
-    let(:params) { { :run_at_boot => true } }
+    let(:params) { { :cron_run_at_boot => true } }
 
     it 'run as cron at boot' do
       should contain_cron('puppet_agent_once_at_boot').with(
@@ -90,7 +90,7 @@ describe 'puppet::agent' do
   end # cron_user
 
   context 'run as a noop cronjob' do
-    let(:params) { { :run_method => 'cron', :run_in_noop => true } }
+    let(:params) { { :run_method => 'cron', :cron_run_in_noop => true } }
 
     it 'run as cron' do
       should contain_cron('puppet_agent').with(
