@@ -3,14 +3,14 @@
 # and the template puppet.conf.erb.
 
 [main]
-  <%- if @log_level && ! @log_level.empty? -%>
-    log_level        = <%= @log_level %>
+  <%- if @no_warnings && ! @no_warnings.empty? -%>
+    disable_warnings = <%= @no_warnings.join(', ') %>
   <%- end -%>
   <%- if @dns_alt_names && ! @dns_alt_names.empty? -%>
     dns_alt_names    = <%= @dns_alt_names.join(', ') %>
   <%- end -%>
-  <%- if @no_warnings && ! @no_warnings.empty? -%>
-    disable_warnings = <%= @no_warnings.join(', ') %>
+  <%- if @log_level && ! @log_level.empty? && @log_level != 'notice' -%>
+    log_level        = <%= @log_level %>
   <%- end -%>
   <%- if @extra_main && ! @extra_main.empty? -%>
 
@@ -71,7 +71,9 @@
     # Directory Environments
     environmentpath     = <%= @envdir %>
     environment_timeout = <%= @env_timeout %>
+  <%- if @strict && ! @strict.empty? && @strict != 'warning' -%>
     strict = <%= @strict %>
+  <%- end -%>
   <%- if @reports && ! @reports.empty? -%>
 
     # List of reports to run

@@ -4,8 +4,8 @@
 #   as a daemon, but configuration hooks are provided for running via cron
 #   instead.  Most configuration should take place from hiera.
 #
-#   Note: /etc/puppet/puppet.conf is managed by puppet::config (which is
-#   loaded from here, but still, go look over there!).
+#   Note: /etc/puppetlabs/puppet/puppet.conf is managed by puppet::config
+#   (which is loaded from here, but still, go look over there!).
 #
 # == Parameters
 #

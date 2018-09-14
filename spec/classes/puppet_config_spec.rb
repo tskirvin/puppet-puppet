@@ -7,10 +7,10 @@ describe 'puppet::config' do
   context 'minimum case' do
     it 'manage puppet.conf' do
       is_expected.to contain_file('puppet.conf').with(
-        :path   => '/etc/puppetlabs/puppet/puppet.conf',
-        :owner  => 'root',
-        :group  => 'root',
-        :mode   => '0644'
+        :path  => '/etc/puppetlabs/puppet/puppet.conf',
+        :owner => 'root',
+        :group => 'root',
+        :mode  => '0644'
       )
     end # manage puppet.conf
 
@@ -73,6 +73,7 @@ describe 'puppet::config' do
   end # aliases
 
   ### autosign ###
+  
   context 'autosign' do
     context 'enabled' do
       let(:params) { { :master => true, :is_ca => true, :autosign => 'testing' } }
@@ -185,27 +186,33 @@ describe 'puppet::config' do
 
       it do
         is_expected.to contain_file('puppet.conf').
-          with_content(/^# \/foo\/puppet.conf$/)
+          with_content(%r/^# \/foo\/puppet.conf$/)
       end
     end
 
     context 'invalid' do
       let(:params) { { :master => true, :config_path => false } }
 
-      it { is_expected.to raise_error(Puppet::Error, /expects a String/) }
+      it { is_expected.to raise_error(Puppet::Error, %r/expects a String/) }
     end
   end # config_path
 
-  ### enc ###
+  ### configtimeout ###
+  context 'configtimeout' do
+    let(:params) { { :configtimeout => 240 } }
+    it { is_expected.to contain_file('puppet.conf').
+        with_content(%r/^\s+configtimeout = 240$/) }
+  end # configtimeout
 
+  ### enc ###
   context 'enc' do
     context 'enabled' do
       let(:params) { { :master => true, :enc => 'testing' } }
 
       it 'enable enc' do
         is_expected.to contain_file('puppet.conf').
-          with_content(/^\s+node_terminus\s+= exec$/).
-          with_content(/^\s+external_nodes\s+= testing$/)
+          with_content(%r/^\s+node_terminus\s+= exec$/).
+          with_content(%r/^\s+external_nodes\s+= testing$/)
       end # enable enc
     end
 
@@ -214,7 +221,7 @@ describe 'puppet::config' do
 
       it 'not enable enc' do
         is_expected.to contain_file('puppet.conf').
-          without_content(/^\s+node_terminus\s+= exec$/)
+          without_content(%r/^\s+node_terminus\s+= exec$/)
       end # not enable enc
     end
 
@@ -223,7 +230,7 @@ describe 'puppet::config' do
 
       it 'not enable enc' do
         is_expected.to contain_file('puppet.conf').
-          without_content(/^\s+node_terminus \s+= exec$/)
+          without_content(%r/^\s+node_terminus \s+= exec$/)
       end # not enable enc
     end
 
@@ -244,7 +251,7 @@ describe 'puppet::config' do
 
       it 'updated environment' do
         is_expected.to contain_file('puppet.conf').
-          with_content(/^\s+environment = foo_bar$/)
+          with_content(%r/^\s+environment = foo_bar$/)
       end # updated environment
     end # new env
 
@@ -273,7 +280,7 @@ describe 'puppet::config' do
 
       it do
         is_expected.to contain_file('puppet.conf').
-          with_content(/^\s+environmentpath\s+= \/etc\/puppetlabs\/code\/environments$/)
+          with_content(%r/^\s+environmentpath\s+= \/etc\/puppetlabs\/code\/environments$/)
       end
     end
 
@@ -282,7 +289,7 @@ describe 'puppet::config' do
 
       it do
         is_expected.to contain_file('puppet.conf').
-          with_content(/^\s+environmentpath\s+= \/foo$/)
+          with_content(%r/^\s+environmentpath\s+= \/foo$/)
       end
     end
 

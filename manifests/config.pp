@@ -1,58 +1,49 @@
-# puppet::config
+# Manage /etc/puppetlabs/puppet/puppet.conf for both agent and master
+# use.  It is designed to be configured via hiera.
 #
-#   Manage /etc/puppetlabs/puppet/puppet.conf for both agent and master
-#   use.  It is designed to be configured via hiera.
+# @example Declaring the class (with hiera)
 #
-# == Parameters
+#   include puppet::config    # env and server must be set via hiera
 #
-#    agent         Configure the [agent] section?  Default: true
-#    aliases       An array of alternate server names, mapping to dns_alt_names
-#                  (along with $certname).  If set, you'll probably have to
-#                  handle some manual steps to bring the host up as part of a
-#                  pool, involving signing the larger cert; see:
-#                      http://docs.puppetlabs.com/guides/scaling_multiple_masters.html#before-running-puppet-agent-or-puppet-master
-#    autosign      Script to run for puppet autosigning in [master].   Default:
-#                  empty.
-#    ca_server     Maps to the ca_server field in the [agent] block if
-#                  non-empty.  Defaults to an empty string,
-#    certname      'certname' field in [main].  Default: $::fqdn.
-#    config_path   /etc/puppetlabs/puppet
-#    configtimeout Integer, time to wait for catalog to compile
-#    enc           Are we using an external node classifier?  If so, set
-#                  this to the right script name.  Defaults to 'false'.
-#    env           Environment name.  Must be a string with length >= 1.
-#    envdir        /etc/puppetlabs/code/environments
-#    extra_agent   Array, extra settings for [agent]
-#    extra_main    Array, extra settings for [main]
-#    extra_master  Array, extra settings for [master]
-#    env           Default environment; no default, must be set.
-#    env_timeout   180 (seconds)
-#    is_ca         Am I the Certificate Authority?  Corresponds to the 'ca'
-#                  field.  Default: false
-#    master        Configure the [master] section?  Default: false
-#    no_warnings   Array of strings from which to ignore warnings; maps to the
-#                  'disable_warnings' field.  Empty by default.
-#    port          Which port are we talking on?  Defaults to 8140.  Note that
-#                  this isn't actually used in the template; we need it for
-#                  other classes.
-#    reports       Array of reports to send after a puppet run.  Defaults
-#                  empty; valid options include 'puppetdb' and 'tagmail'.
-#    reporturl     If we're sending an http report, where do we send it?
-#                  Defaults to an empty string.
-#    run_in_noop   If set, don't make any changes with a puppet run.
-#                  Defaults to false.
-#    srv_domain
-#    server        The main puppet server name.  Required, no default.
-#    use_cache     false
-#    use_puppetdb  If set, turns on puppetdb for storeconfigs.  Defaults
-#                  to off.
-#
-# == Usage
+# @example (Declaring the class (without hiera)
 #
 #   class { 'puppet::config':
 #     env    => 'production',
 #     server => 'cms-puppet.fnal.gov'
 #   }
+#
+# @param agent Configure the [agent] section?
+# @param aliases Alternative server names - maps to dns_alt_names along with $certname.  If set, you'll probably have to handle some manual steps to sign the certificate; see: <http://docs.puppetlabs.com/guides/scaling_multiple_masters.html#before-running-puppet-agent-or-puppet-master>
+# @param autosign Script to run for cert auto-signing; lives in [master].
+# @param ca_server lives in [agent] block
+# @param certname lives in [main] block
+# @param config_path /etc/puppetlabs/puppet
+# @param configtimeout lives in [agent]
+# @param enc script to run as an external node classifier
+# @param env Default environment name.  Required.
+# @param envdir Where does your per-environment puppet code live?  Maps to environmentpath in [master]
+# @param env_timeout In seconds
+# @param extra_agent  Extra settings for [agent]
+# @param extra_main   Extra settings for [main]
+# @param extra_master Extra settings for [master]
+# @param is_ca Am I the Certificate Authority?  Maps to 'ca' field in [master].
+# @param log_level Lives in [main]
+# @param master Configure the [master] section?  
+# @param no_warnings Maps to the 'disable_warnings' field in [main].
+# @param port Puppet service port. Note that this isn't actually used in the template; we need it for other classes.
+# @param reports Array of reports to send after a puppet run.  Valid options include 'puppetdb' and 'tagmail'.
+# @param reporturl URL to send http reports to (if we're sending them)
+# @param run_in_noop If set, don't make any changes with a puppet run.
+# @param runinterval
+# @param runtimeout
+# @param server Puppet server name.  Required.
+# @param show_diff
+# @param splaylimit
+# @param srv_domain If set, use the server option as an SRV domain name instead of a puppetserver name.
+# @param strict Lives in [master]
+# @param trusted_server_facts
+# @param use_cache If set, do not set usecacheonfailure=false
+# @param use_puppetdb  If set, turns on puppetdb for storeconfigs.
 #
 class puppet::config (
   String[1] $env,
@@ -71,8 +62,9 @@ class puppet::config (
   Array   $extra_main    = [],
   Array   $extra_master  = [],
   Boolean $is_ca         = false,
+  Enum['debug', 'info', 'notice', 'warning', 'err', 'alert', 'emerg', 'crit'] $log_level = 'notice',
   Boolean $master        = false,
-  Array   $no_warnings   = [],
+  Array[String] $no_warnings = [],
   Integer $port          = 8140,
   Array   $reports       = [],
   String  $reporturl     = '',
@@ -81,12 +73,11 @@ class puppet::config (
   Integer $runtimeout    = 0,
   Boolean $show_diff     = false,
   Integer $splaylimit    = 0,
+  Enum['off', 'warning', 'error'] $strict = 'warning',
   Boolean $srv_domain    = false,
+  Boolean $trusted_server_facts = true,
   Boolean $use_cache     = false,
   Boolean $use_puppetdb  = false,
-  Enum['manifest', 'title-hash', 'random'] $ordering = 'manifest',
-  Enum['off', 'warning', 'error'] $strict = 'warning',
-  Enum['debug', 'info', 'notice', 'warning', 'err', 'alert', 'emerg', 'crit'] $log_level = 'notice'
 
 ) {
   if count($aliases) > 0 {
