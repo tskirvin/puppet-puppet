@@ -7,10 +7,13 @@
     disable_warnings = <%= @no_warnings.join(', ') %>
   <%- end -%>
   <%- if @dns_alt_names && ! @dns_alt_names.empty? -%>
-    dns_alt_names    = <%= @dns_alt_names.join(', ') %>
+    dns_alt_names = <%= @dns_alt_names.join(', ') %>
   <%- end -%>
   <%- if @log_level && ! @log_level.empty? && @log_level != 'notice' -%>
     log_level        = <%= @log_level %>
+  <%- end -%>
+  <%- if @proxy_host && ! @proxy_host.empty? -%>
+    http_proxy_host = <%= @proxy_host %>
   <%- end -%>
   <%- if @extra_main && ! @extra_main.empty? -%>
 
@@ -31,34 +34,18 @@
   <%- if @ca_server != '' -%>
     ca_server   = <%= @ca_server %>
   <%- end -%>
-  <%- if @runinterval >= 0 -%>
-    runinterval = <%= @runinterval %>
-  <%- end -%>
-  <%- if @splaylimit > 0 -%>
-    splay       = true
-    splaylimit  = <%= @splaylimit %>
-  <%- else -%>
-    splay       = false
-  <%- end -%>
     classfile   = $vardir/classes.txt
   <%- if @configtimeout >= 0 -%>
     configtimeout = <%= @configtimeout %>
   <%- end -%>
-  <%- if @runtimeout >= 0 -%>
-    runtimeout  = <%= @runtimeout %>
-  <%- end -%>
   <%- if @run_in_noop -%>
     noop        = true
-  <%- end -%>
-  <%- if @show_diff -%>
-    show_diff   = true
   <%- end -%>
   <%- if @extra_agent && ! @extra_agent.empty? -%>
 
     # extra lines, from extra_agent
     <%= @extra_agent.join("\n    ") %>
   <%- end -%>
-
   <%- if @use_cache %>
     usecacheonfailure = true
   <%- else -%>
@@ -71,9 +58,6 @@
     # Directory Environments
     environmentpath     = <%= @envdir %>
     environment_timeout = <%= @env_timeout %>
-  <%- if @strict && ! @strict.empty? && @strict != 'warning' -%>
-    strict = <%= @strict %>
-  <%- end -%>
   <%- if @reports && ! @reports.empty? -%>
 
     # List of reports to run
@@ -100,8 +84,12 @@
 
     reporturl = <%= @reporturl %>
   <%- end -%>
-  <%- if @extra_master && ! @extra_master.empty? -%>
+  <%- if @trusted_server_facts -%>
 
+    trusted_server_facts = true
+  <% end -%>
+  <%- if @extra_master && ! @extra_master.empty? -%>
+    #
     # extra lines, from extra_master
     <%= @extra_master.join("\n    ") %>
   <%- end -%>

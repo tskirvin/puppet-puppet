@@ -31,6 +31,7 @@
 # @param master Configure the [master] section?  
 # @param no_warnings Maps to the 'disable_warnings' field in [main].
 # @param port Puppet service port. Note that this isn't actually used in the template; we need it for other classes.
+# @param proxy_host
 # @param reports Array of reports to send after a puppet run.  Valid options include 'puppetdb' and 'tagmail'.
 # @param reporturl URL to send http reports to (if we're sending them)
 # @param run_in_noop If set, don't make any changes with a puppet run.
@@ -66,6 +67,7 @@ class puppet::config (
   Boolean $master        = false,
   Array[String] $no_warnings = [],
   Integer $port          = 8140,
+  Variant[String, Undef] $proxy_host = undef,
   Array   $reports       = [],
   String  $reporturl     = '',
   Boolean $run_in_noop   = false,

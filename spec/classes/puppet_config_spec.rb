@@ -73,7 +73,7 @@ describe 'puppet::config' do
   end # aliases
 
   ### autosign ###
-  
+
   context 'autosign' do
     context 'enabled' do
       let(:params) { { :master => true, :is_ca => true, :autosign => 'testing' } }
@@ -186,7 +186,7 @@ describe 'puppet::config' do
 
       it do
         is_expected.to contain_file('puppet.conf').
-          with_content(%r/^# \/foo\/puppet.conf$/)
+          with_content(/^# \/foo\/puppet.conf$/)
       end
     end
 
@@ -198,13 +198,28 @@ describe 'puppet::config' do
   end # config_path
 
   ### configtimeout ###
+
   context 'configtimeout' do
-    let(:params) { { :configtimeout => 240 } }
-    it { is_expected.to contain_file('puppet.conf').
-        with_content(%r/^\s+configtimeout = 240$/) }
+    context 'default' do
+      it { is_expected.to contain_file('puppet.conf').
+          with_content(%r/^\s+configtimeout = 180$/) }
+    end
+
+    context 'unset' do
+      let(:params) { { :configtimeout => -1 } }
+      it { is_expected.to contain_file('puppet.conf').
+          without_content(%r/^\s+configtimeout.*$/) }
+    end
+
+    context 'set' do
+      let(:params) { { :configtimeout => 240 } }
+      it { is_expected.to contain_file('puppet.conf').
+          with_content(%r/^\s+configtimeout = 240$/) }
+    end
   end # configtimeout
 
   ### enc ###
+
   context 'enc' do
     context 'enabled' do
       let(:params) { { :master => true, :enc => 'testing' } }
@@ -458,6 +473,42 @@ describe 'puppet::config' do
 
   end # is_ca
 
+  ### log_level ###
+
+  context 'log_level' do
+    ['debug', 'info', 'warning', 'err', 'alert', 'emerg', 'crit'].each do |l|
+      context "log_level #{l}" do
+        let(:params) { { 'log_level' => l } }
+        it "set log_level to #{l}" do
+          is_expected.to contain_file('puppet.conf').
+            with_content(/^.*log_level\s+=\s+#{l}$/)
+        end
+      end
+    end
+
+    context "log_level foo should fail" do
+      let(:params) { { 'log_level' => 'foo' } }
+      it do is_expected.to raise_error(Puppet::Error, /foo/)
+      end
+    end
+
+    context "log_level notice is default" do
+      it do
+        is_expected.to contain_file('puppet.conf').
+         without_content(/^.*log_level.*$/)
+      end
+    end
+
+    context "log_level notice is default" do
+      let(:params) { { 'log_level' => 'notice' } }
+      it do
+        is_expected.to contain_file('puppet.conf').
+         without_content(/^.*log_level.*$/)
+      end
+    end
+
+  end
+
   ### master ###
 
   context 'master' do
@@ -542,6 +593,39 @@ describe 'puppet::config' do
       end
     end
   end
+
+  ### proxy_host ###
+  context 'proxy_host' do
+    context 'default' do
+      it do
+        is_expected.to contain_file('puppet.conf').
+          without_content(/^\s+http_proxy_host.*$/)
+      end
+    end
+
+    context 'string' do
+      let(:params) { { :proxy_host => 'foo.bar' } }
+      it do
+        is_expected.to contain_file('puppet.conf').
+          with_content(/^\s+http_proxy_host = foo.bar$/)
+      end
+    end
+
+    context 'undef' do
+      let(:params) { { :proxy_host => :undef } }
+      it do
+        is_expected.to contain_file('puppet.conf').
+          without_content(/^\s+http_proxy_host.*$/)
+      end
+    end
+
+    context 'integer' do
+      let(:params) { { :proxy_host => 1111 } }
+      it do
+        is_expected.to raise_error(Puppet::Error, /expects a value of/)
+      end
+    end
+  end # proxy_host
 
   ### reports ###
 
@@ -655,6 +739,12 @@ describe 'puppet::config' do
     end
   end # run_in_noop
 
+  ### runinterval ###
+  # TODO
+
+  ### runtimeout ###
+  # TODO
+
   ### server ###
 
   context 'server' do
@@ -683,6 +773,12 @@ describe 'puppet::config' do
       end
     end # bad server type
   end # server
+
+  ### show_diff ###
+  # TODO
+
+  ### splaylimit ###
+  # TODO
 
   ### srv_domain ###
 
@@ -728,6 +824,12 @@ describe 'puppet::config' do
       end
     end
   end # srv_domain
+
+  ### strict ###
+  # TODO
+
+  ### trusted_server_facts ###
+  # TODO
 
   ### use_cache ###
 
