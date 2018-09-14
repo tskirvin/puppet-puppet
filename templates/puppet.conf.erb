@@ -3,8 +3,11 @@
 # and the template puppet.conf.erb.
 
 [main]
+  <%- if @log_level && ! @log_level.empty? -%>
+    log_level        = <%= @log_level %>
+  <%- end -%>
   <%- if @dns_alt_names && ! @dns_alt_names.empty? -%>
-    dns_alt_names = <%= @dns_alt_names.join(', ') %>
+    dns_alt_names    = <%= @dns_alt_names.join(', ') %>
   <%- end -%>
   <%- if @no_warnings && ! @no_warnings.empty? -%>
     disable_warnings = <%= @no_warnings.join(', ') %>
@@ -28,9 +31,27 @@
   <%- if @ca_server != '' -%>
     ca_server   = <%= @ca_server %>
   <%- end -%>
+  <%- if @runinterval >= 0 -%>
+    runinterval = <%= @runinterval %>
+  <%- end -%>
+  <%- if @splaylimit > 0 -%>
+    splay       = true
+    splaylimit  = <%= @splaylimit %>
+  <%- else -%>
+    splay       = false
+  <%- end -%>
     classfile   = $vardir/classes.txt
+  <%- if @configtimeout >= 0 -%>
+    configtimeout = <%= @configtimeout %>
+  <%- end -%>
+  <%- if @runtimeout >= 0 -%>
+    runtimeout  = <%= @runtimeout %>
+  <%- end -%>
   <%- if @run_in_noop -%>
     noop        = true
+  <%- end -%>
+  <%- if @show_diff -%>
+    show_diff   = true
   <%- end -%>
   <%- if @extra_agent && ! @extra_agent.empty? -%>
 
@@ -50,6 +71,7 @@
     # Directory Environments
     environmentpath     = <%= @envdir %>
     environment_timeout = <%= @env_timeout %>
+    strict = <%= @strict %>
   <%- if @reports && ! @reports.empty? -%>
 
     # List of reports to run

@@ -19,21 +19,21 @@ daemon (default), or via cron on a regular basis.
 
 Parameters:
 
-    cron_command   Command to run if we are running via cron.  There is a
-                   default, and I do not use it much so somebody should
-                   look at it in more detail.
-    cron_user      User to run the cronjob as; defaults to 'root'.
-    daemon_name    If we are running as a daemon, what is the daemon name?
-                   Defaults to 'puppet'.
-    logdir         Set up logging, pointing at this log directory.  Any
-                   logs go to ${logdir}/puppet.log, in addition to syslog.
-                   Defaults to 'false', so no additional logging will happen.
-    run_at_boot    Set this if you're running in 'cron' mode.
-    run_in_noop    If set, we won't actually make any changes.  Defaults to
-                   false.
-    run_interval   If running via cron, how often should we run?  Defaults
-                   to 30 (minutes).
-    run_method     'service' or 'cron'; default is 'service'
+    cron_command      Command to run if we are running via cron.  There is a
+                       default, and I do not use it much so somebody should
+                       look at it in more detail.
+    cron_user         User to run the cronjob as; defaults to 'root'.
+    cron_run_at_boot  Set this if you're running in 'cron' mode.
+    cron_run_in_noop  If set, we won't actually make any changes.  Defaults to
+                       false.
+    cron_run_interval If running via cron, how often should we run?  Defaults
+                       to 30 (minutes).
+    cron_earliest_hour Don't run the cronjob before this hour (except for boot)
+    cron_latest_hour   Don't run the cronjob after this hour (except for boot)
+
+    daemon_name      If we are running as a daemon, what is the daemon name?
+                      Defaults to 'puppet'.
+    run_method       Pick one of: 'service' or 'cron'; default is 'service'
 
 ### puppet::config
 
@@ -52,6 +52,7 @@ Parameters:
                 non-empty.  Defaults to an empty string,
     certname     Maps to the certname field in [main].  Defaults to $::fqdn.
     config_path  /etc/puppet
+    configtimeout How long should we wait for a catalog?  Defaults to 180
     enc          Are we using an external node classifier?  If so, set
                  this to the right script name.  Defaults to 'false'.
     envdir       /etc/puppet/environments
@@ -59,6 +60,7 @@ Parameters:
     env_timeout  180 (seconds)
     is_ca        Am I the Certificate Authority?  Corresponds to the 'ca'
                  field.  Defaults to false.
+    log_level    What severity should puppet use?  Defaults to notice.
     master       Should we configure the puppet master variables?
                  Defaults to false.
     no_warnings  Array of strings from which to ignore warnings; maps to the
@@ -70,9 +72,15 @@ Parameters:
                  empty; valid options include 'puppetdb' and 'tagmail'.
     reporturl    If we're sending an http report, where do we send it?
                  Defaults to an empty string.
+    runinterval  How often should the puppet daemon run?  Defaults to unset.
+    runtimeout   What is the max runtime any catalog should have?
     run_in_noop  If set, don't make any changes with a puppet run.
                  Defaults to false.
     server       The main puppet server name.  Required, no default.
+    show_diff    Default: false
+    splaylimit   How much random time should we add to runinterval?
+                 Defaults to unset.
+    strict       https://puppet.com/docs/puppet/5.5/configuration.html#strict
     use_puppetdb If set, turns on puppetdb for storeconfigs.  Defaults
                  to off.
 

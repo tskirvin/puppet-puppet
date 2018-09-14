@@ -9,17 +9,19 @@
 #
 # == Parameters
 #
-#    cron_command   Command to run if we're running via cron.  The default
-#                   should be looked at.
-#    cron_user      Defaults to 'root'.
-#    daemon_name    If we're running as a daemon, what is the daemon name?
-#                   Defaults to 'puppet'.
-#    run_at_boot    Disable this if you're running in 'cron' mode.
-#    run_in_noop    If set, we won't actually make any changes.  Defaults to
-#                   false.
-#    run_interval   If running via cron, how often should we run?  Defaults
-#                   to 30 (minutes).
-#    run_method     'service' or 'cron'
+#    cron_command      Command to run if we're running via cron.  The default
+#                       should be looked at.
+#    cron_user         Defaults to 'root'.
+#    cron_run_at_boot  Disable this if you're running in 'cron' mode.
+#    cron_run_in_noop  If set, we won't actually make any changes.  Defaults to
+#                       false.
+#    cron_run_interval If running via cron, how often should we run?  Defaults
+#                       to 30 (minutes).
+#    cron_earliest_hour Don't run the cronjob before this hour (except for boot)
+#    cron_latest_hour   Don't run the cronjob after this hour (except for boot)
+#    daemon_name       If we're running as a daemon, what is the daemon name?
+#                       Defaults to 'puppet'.
+#    run_method        'service', 'cron', or 'manual'
 #
 # == Usage
 #
@@ -33,16 +35,18 @@
 class puppet::agent (
   String $cron_command = '/opt/puppetlabs/bin/puppet agent -t',
   String $cron_user    = 'root',
+  Boolean $cron_run_at_boot   = true,
+  Boolean $cron_run_in_noop   = false,
+  Integer $cron_run_interval  = 30,
+  Integer $cron_earliest_hour = 0,
+  Integer $cron_latest_hour   = 23,
   String $daemon_name  = 'puppet',
-  Boolean $run_at_boot  = true,
-  Boolean $run_in_noop  = false,
-  Integer $run_interval = 30,
   Enum['service', 'cron', 'manual'] $run_method = 'cron'
 ) {
   require puppet::config
 
-  if $run_in_noop { $my_cron_command = "${cron_command} --noop" }
-  else            { $my_cron_command = $cron_command }
+  if $cron_run_in_noop { $my_cron_command = "${cron_command} --noop" }
+  else                 { $my_cron_command = $cron_command }
 
   case $run_method {
     'service': {
@@ -55,11 +59,52 @@ class puppet::agent (
     'cron': {
       $daemon_ensure = 'stopped'
       $daemon_enable = false
-      $cron_run_one  = fqdn_rand($run_interval)
-      $cron_run_two  = fqdn_rand($run_interval) + 30
       $cron_ensure   = 'present'
-      $cron_hour     = '*'
-      $cron_minute   = [$cron_run_one, $cron_run_two]
+
+      $possible_hours  = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23']
+
+      # if cron_run_interval is >1h, drop even numbered hours
+      # if >2h also drop divisible by 3
+      # if we aren't supposed to run then, drop that hour too
+      $possible_hours.each |Integer $hour| {
+        if ($cron_run_interval > 60) {
+          if ($cron_run_interval >= 120) {
+            if ($hour % 2) and ($hour % 3) {
+              if ($hour >= $cron_earliest_hour) and ($hour <= $cron_latest_hour) {
+                $my_hours << $hour
+              }
+            } else {
+              if ($hour % 2) {
+                if ($hour >= $cron_earliest_hour) and ($hour <= $cron_latest_hour) {
+                  $my_hours << $hour
+                }
+              }
+            }
+          } else {
+            if ($hour >= $cron_earliest_hour) and ($hour <= $cron_latest_hour) {
+              $my_hours << $hour
+            }
+          }
+        }
+      }
+
+      if ($possible_hours == $my_hours) { $cron_hour = ['*'] }
+      else                              { $cron_hour = $my_hours }
+
+      if ($cron_run_interval <= 30) {
+        # yes, technically this wouldn't run every 20 minutes
+        # but lack of 'while' loops makes building that hard
+        # so deal.
+        $cron_run_one  = fqdn_rand($cron_run_interval)
+        $cron_run_two  = fqdn_rand($cron_run_interval) + 30
+        $cron_minute   = [$cron_run_one, $cron_run_two]
+      } else {
+        # yes, technically this wouldn't run every 45 minutes
+        # but lack of 'while' loops makes building that hard
+        # so deal.
+        $cron_minute   = fqdn_rand(60, $cron_run_interval)
+      }
+
     }
     'manual': {
       $daemon_ensure = 'stopped'
@@ -71,7 +116,7 @@ class puppet::agent (
     default: { fail ("run_method: invalid value (${run_method})") }
   }
 
-  if $run_at_boot { $at_boot_ensure = 'present' }
+  if $cron_run_at_boot { $at_boot_ensure = 'present' }
   else            { $at_boot_ensure = 'absent'  }
 
   service { 'puppet_agent_daemon':
