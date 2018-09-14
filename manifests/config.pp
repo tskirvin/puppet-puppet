@@ -20,7 +20,7 @@
 #    configtimeout Integer, time to wait for catalog to compile
 #    enc           Are we using an external node classifier?  If so, set
 #                  this to the right script name.  Defaults to 'false'.
-#    env
+#    env           Environment name.  Must be a string with length >= 1.
 #    envdir        /etc/puppetlabs/code/environments
 #    extra_agent   Array, extra settings for [agent]
 #    extra_main    Array, extra settings for [main]

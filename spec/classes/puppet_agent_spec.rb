@@ -62,7 +62,7 @@ describe 'puppet::agent' do
         :ensure  => 'present',
         :command => cron_command,
         :user    => 'root',
-        :hour    => '*',
+        :hour    => ['*'],
         :minute  => [/\d+/, /\d+/]
       )
     end

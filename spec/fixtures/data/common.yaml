@@ -1,0 +1,2 @@
+puppet::config::env: baz
+puppet::config::server: server.invalid
