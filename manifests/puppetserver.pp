@@ -3,18 +3,12 @@
 #
 # @param config_path
 # @param sysconf_path
-# @param java_args
-# @param java_memory_min_percentage
-# @param java_memory_max_percentage
 # @param max_instances
 # @param ssl_path
 #
 class puppet::puppetserver (
   String $config_path = '/etc/puppetlabs',
   String $sysconf_path = '/etc/sysconfig',
-  String $java_args = '-XX:+UseG1GC',
-  Numeric $java_memory_min_percentage = 60,
-  Numeric $java_memory_max_percentage = 80,
   Integer $max_instances = $::processorcount,
   String $ssl_path = 'ssl'
 ) inherits puppet::config {
@@ -55,22 +49,6 @@ class puppet::puppetserver (
   file { "${config_path}/puppetserver/conf.d/webserver.conf":
     content => template('puppet/puppetserver-webserver.erb'),
     notify  => Service['puppetserver']
-  }
-
-  # generate the JAVA_ARGS argument - Xms, Xmx
-  $memory = $::memorysize_mb / 1024
-  $xms = $memory * $java_memory_min_percentage / 100
-  $xmx = $memory * $java_memory_max_percentage / 100
-
-  $jargs_0 = inline_template('-Xms<%= format("%.0f", @xms) %>g')
-  $jargs_1 = inline_template('-Xmx<%= format("%.0f", @xmx) %>g')
-  $line = "JAVA_ARGS=\"${jargs_0} ${jargs_1} ${java_args}\""
-
-  file_line { 'puppetserver-java_args':
-    path   => "${sysconf_path}/puppetserver",
-    line   => $line,
-    match  => 'JAVA_ARGS',
-    notify => Service['puppetserver']
   }
 
   file_line { 'puppetserver-max-active-instances':
