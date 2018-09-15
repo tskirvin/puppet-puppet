@@ -38,53 +38,35 @@ Parameters:
 ### puppet::config
 
 Manages `/etc/puppet/puppet.conf`.  It is meant for configuration via hiera.
-
-Parameters:
+There are puppet-strings-compatible docs included; a few specific useful
+parameters should provide some flavor:
 
     agent        Should we configure the puppet agent variables?
                  Defaults to true.
-    aliases      An array of alternate server names, mapping to dns_alt_names
-                 (along with $certname).  If set, you'll probably have to
-                 handle some manual steps to bring the host up as part of a
-                 pool, involving signing the larger cert; see:
-                     http://docs.puppetlabs.com/guides/scaling_multiple_masters.html#before-running-puppet-agent-or-puppet-master
-    ca_server    Maps to the ca_server field in the [agent] block if
-                non-empty.  Defaults to an empty string,
     certname     Maps to the certname field in [main].  Defaults to $::fqdn.
-    config_path  /etc/puppet
-    configtimeout How long should we wait for a catalog?  Defaults to 180
     enc          Are we using an external node classifier?  If so, set
                  this to the right script name.  Defaults to 'false'.
-    envdir       /etc/puppet/environments
-    env          Default environment; no default, must be set.
+    env          Default puppet environment; required.
     env_timeout  180 (seconds)
     is_ca        Am I the Certificate Authority?  Corresponds to the 'ca'
                  field.  Defaults to false.
-    log_level    What severity should puppet use?  Defaults to notice.
+    log_level    What severity should puppet use?  Defaults to 'notice'.
     master       Should we configure the puppet master variables?
                  Defaults to false.
     no_warnings  Array of strings from which to ignore warnings; maps to the
                  'disable_warnings' field.  Empty by default.
-    port         Which port are we talking on?  Defaults to 8140.  Note that
-                 this isn't actually used in the template; we need it for
-                 other classes.
-    reports      Array of reports to send after a puppet run.  Defaults
-                 empty; valid options include 'puppetdb' and 'tagmail'.
-    reporturl    If we're sending an http report, where do we send it?
-                 Defaults to an empty string.
     runinterval  How often should the puppet daemon run?  Defaults to unset.
     runtimeout   What is the max runtime any catalog should have?
     run_in_noop  If set, don't make any changes with a puppet run.
                  Defaults to false.
     server       The main puppet server name.  Required, no default.
-    show_diff    Default: false
     splaylimit   How much random time should we add to runinterval?
                  Defaults to unset.
     strict       https://puppet.com/docs/puppet/5.5/configuration.html#strict
     use_puppetdb If set, turns on puppetdb for storeconfigs.  Defaults
                  to off.
 
-### puppet::puppetserver
+### puppet::puppetserver, puppet::puppetserver::java
 
 Start the `puppetserver` process.  Currently not very configurable.
 

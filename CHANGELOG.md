@@ -1,5 +1,18 @@
 ## Current
 
+### [1.3.0]
+
+* `puppet::config` - added lots of new parameters (mostly from Pat
+  Riehecky <riehecky@fnal.gov>) - `proxy_host`, `configtimeout`,
+  `log_level`, `runinterval`, `runtimeout`, `show_diff`, `splaylimit`,
+  `strict`
+* `puppet::agent` - cron-options are now much more powerful and useful
+* `puppet::config` - removed `trusted_server_facts`
+* `puppet::puppetserver` now does more things, but isn't as configurable;
+  this is what I've been using upstream for a while though.
+* `puppet::puppetserver::java` provides some java tuning options
+* Significantly better test suite (pdk 1.7.0)
+
 ### [1.2.0]
 
 * Puppet 4 support
