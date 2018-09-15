@@ -41,6 +41,12 @@
   <%- if @run_in_noop -%>
     noop        = true
   <%- end -%>
+  <%- if @runinterval && ! @runinterval.empty? -%>
+    runinterval = <%= @runinterval %>
+  <%- end -%>
+  <%- if @runtimeout && ! @runtimeout.empty? -%>
+    runtimeout = <%= @runtimeout %>
+  <%- end -%>
   <%- if @extra_agent && ! @extra_agent.empty? -%>
 
     # extra lines, from extra_agent
@@ -63,6 +69,9 @@
     # List of reports to run
     reports = <%= @reports.join(',') %>
   <%- end -%>
+  <%- if @reporturl != '' -%>
+    reporturl = <%= @reporturl %>
+  <%- end -%>
 
     ca          = <%= @is_ca ? "true" : "false" %>
   <%- if @is_ca && @autosign != '' -%>
@@ -80,16 +89,14 @@
     storeconfigs         = true
     storeconfigs_backend = puppetdb
   <%- end -%>
-  <%- if @reporturl != '' -%>
-
-    reporturl = <%= @reporturl %>
+  <%- if @strict && @strict != 'warning' -%>
+    strict = <%= @strict %>
   <%- end -%>
   <%- if @trusted_server_facts -%>
-
     trusted_server_facts = true
   <% end -%>
   <%- if @extra_master && ! @extra_master.empty? -%>
-    #
+    
     # extra lines, from extra_master
     <%= @extra_master.join("\n    ") %>
   <%- end -%>

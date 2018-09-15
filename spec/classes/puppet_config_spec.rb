@@ -740,10 +740,70 @@ describe 'puppet::config' do
   end # run_in_noop
 
   ### runinterval ###
-  # TODO
+  context 'runinterval' do
+    context 'default' do
+      it do
+        is_expected.to contain_file('puppet.conf').
+          without_content(/^\s+runinterval.*$/)
+      end
+    end
+
+    context 'string' do
+      let(:params) { { :runinterval => '30m' } }
+      it do
+        is_expected.to contain_file('puppet.conf').
+          with_content(/^\s+runinterval\s+= 30m$/)
+      end
+    end
+
+    context 'undef' do
+      let(:params) { { :runinterval => :undef } }
+      it do
+        is_expected.to contain_file('puppet.conf').
+          without_content(/^\s+runinterval.*$/)
+      end
+    end
+
+    context 'integer' do
+      let(:params) { { :runinterval => 1111 } }
+      it do
+        is_expected.to raise_error(Puppet::Error, /expects a value of/)
+      end
+    end
+  end # runinterval
 
   ### runtimeout ###
-  # TODO
+  context 'runtimeout' do
+    context 'default' do
+      it do
+        is_expected.to contain_file('puppet.conf').
+          without_content(/^\s+runtimeout.*$/)
+      end
+    end
+
+    context 'string' do
+      let(:params) { { :runtimeout => '30m' } }
+      it do
+        is_expected.to contain_file('puppet.conf').
+          with_content(/^\s+runtimeout\s+= 30m$/)
+      end
+    end
+
+    context 'undef' do
+      let(:params) { { :runtimeout => :undef } }
+      it do
+        is_expected.to contain_file('puppet.conf').
+          without_content(/^\s+runtimeout.*$/)
+      end
+    end
+
+    context 'integer' do
+      let(:params) { { :runtimeout => 1111 } }
+      it do
+        is_expected.to raise_error(Puppet::Error, /expects a value of/)
+      end
+    end
+  end # runtimeoutt
 
   ### server ###
 
@@ -829,7 +889,31 @@ describe 'puppet::config' do
   # TODO
 
   ### trusted_server_facts ###
-  # TODO
+  context 'trusted_server_facts' do
+    context 'true' do
+      let(:params) { { :trusted_server_facts => true, :master => true } }
+      it do
+        is_expected.to contain_file('puppet.conf').
+          with_content(/^\s+trusted_server_facts = true$/)
+      end
+    end
+
+    context 'false' do
+      let(:params) { { :trusted_server_facts => false, :master => true } }
+      it do
+        is_expected.to contain_file('puppet.conf').
+          without_content(/^\s+trusted_server_facts$/)
+      end
+    end
+
+    context 'default' do
+      let(:params) { { :master => true } }
+      it do
+        is_expected.to contain_file('puppet.conf').
+          with_content(/^\s+trusted_server_facts = true$/)
+      end
+    end
+  end
 
   ### use_cache ###
 
