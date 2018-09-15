@@ -18,7 +18,7 @@
 # @param ca_server lives in [agent] block
 # @param certname lives in [main] block
 # @param config_path /etc/puppetlabs/puppet
-# @param configtimeout lives in [agent]
+# @param configtimeout lives in [agent], -1 means 'default'
 # @param enc script to run as an external node classifier
 # @param env Default environment name.  Required.
 # @param envdir Where does your per-environment puppet code live?  Maps to environmentpath in [master]
@@ -55,7 +55,7 @@ class puppet::config (
   String  $ca_server     = '',
   String  $certname      = $::fqdn,
   String  $config_path   = '/etc/puppetlabs/puppet',
-  Integer $configtimeout = 180,
+  Integer $configtimeout = -1,
   String  $enc           = '',
   String  $envdir        = '/etc/puppetlabs/code/environments',
   Integer $env_timeout   = 180,
@@ -77,7 +77,6 @@ class puppet::config (
   Variant[String, Undef] $splaylimit = undef,
   Enum['off', 'warning', 'error'] $strict = 'warning',
   Boolean $srv_domain    = false,
-  Boolean $trusted_server_facts = true,
   Boolean $use_cache     = false,
   Boolean $use_puppetdb  = false,
 

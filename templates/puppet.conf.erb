@@ -99,9 +99,6 @@
   <%- if @strict && @strict != 'warning' -%>
     strict = <%= @strict %>
   <%- end -%>
-  <%- if @trusted_server_facts -%>
-    trusted_server_facts = true
-  <% end -%>
   <%- if @extra_master && ! @extra_master.empty? -%>
     
     # extra lines, from extra_master

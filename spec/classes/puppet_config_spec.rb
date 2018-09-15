@@ -202,7 +202,7 @@ describe 'puppet::config' do
   context 'configtimeout' do
     context 'default' do
       it { is_expected.to contain_file('puppet.conf').
-          with_content(%r/^\s+configtimeout = 180$/) }
+          without_content(%r/^\s+configtimeout.*$/) }
     end
 
     context 'unset' do
@@ -975,33 +975,6 @@ describe 'puppet::config' do
       end
     end
 
-  end
-
-  ### trusted_server_facts ###
-  context 'trusted_server_facts' do
-    context 'true' do
-      let(:params) { { :trusted_server_facts => true, :master => true } }
-      it do
-        is_expected.to contain_file('puppet.conf').
-          with_content(/^\s+trusted_server_facts = true$/)
-      end
-    end
-
-    context 'false' do
-      let(:params) { { :trusted_server_facts => false, :master => true } }
-      it do
-        is_expected.to contain_file('puppet.conf').
-          without_content(/^\s+trusted_server_facts$/)
-      end
-    end
-
-    context 'default' do
-      let(:params) { { :master => true } }
-      it do
-        is_expected.to contain_file('puppet.conf').
-          with_content(/^\s+trusted_server_facts = true$/)
-      end
-    end
   end
 
   ### use_cache ###
