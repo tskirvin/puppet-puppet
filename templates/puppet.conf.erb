@@ -47,16 +47,20 @@
   <%- if @runtimeout && ! @runtimeout.empty? -%>
     runtimeout = <%= @runtimeout %>
   <%- end -%>
-  <%- if @extra_agent && ! @extra_agent.empty? -%>
-
-    # extra lines, from extra_agent
-    <%= @extra_agent.join("\n    ") %>
+  <%- if @splaylimit && ! @splaylimit.empty? -%>
+    splaylimit = <%= @splaylimit %>
   <%- end -%>
   <%- if @use_cache %>
     usecacheonfailure = true
   <%- else -%>
     usecacheonfailure = false
   <%- end -%>
+  <%- if @extra_agent && ! @extra_agent.empty? -%>
+
+    # extra lines, from extra_agent
+    <%= @extra_agent.join("\n    ") %>
+  <%- end -%>
+
 <%- end -%>
 <%- if @master -%>
 
@@ -64,6 +68,9 @@
     # Directory Environments
     environmentpath     = <%= @envdir %>
     environment_timeout = <%= @env_timeout %>
+  <%- if @show_diff -%>
+    show_diff   = true
+  <%- end -%>
   <%- if @reports && ! @reports.empty? -%>
 
     # List of reports to run

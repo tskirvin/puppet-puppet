@@ -74,7 +74,7 @@ class puppet::config (
   Variant[String, Undef] $runinterval = undef,
   Variant[String, Undef] $runtimeout = undef,
   Boolean $show_diff     = false,
-  Integer $splaylimit    = 0,
+  Variant[String, Undef] $splaylimit = undef,
   Enum['off', 'warning', 'error'] $strict = 'warning',
   Boolean $srv_domain    = false,
   Boolean $trusted_server_facts = true,

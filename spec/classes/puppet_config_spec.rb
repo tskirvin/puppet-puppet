@@ -835,10 +835,65 @@ describe 'puppet::config' do
   end # server
 
   ### show_diff ###
-  # TODO
+  context 'show_diff' do
+    context 'true' do
+      let(:params) { { :master => true, :show_diff => true } }
+      it do
+        is_expected.to contain_file('puppet.conf').
+          with_content(/^\s+show_diff\s+= true$/)
+      end
+    end
+
+    context 'false' do
+      let(:params) { { :master => true, :show_diff => false } }
+      it do
+        is_expected.to contain_file('puppet.conf').
+          without_content(/^\s+show_diff.*$/)
+      end
+    end
+
+    context 'default' do
+      let(:params) { { :master => true } }
+      it do
+        is_expected.to contain_file('puppet.conf').
+          without_content(/^\s+show_diff.*$/)
+      end
+    end
+  end
 
   ### splaylimit ###
-  # TODO
+  context 'splaylimit' do
+    context 'default' do
+      it do
+        is_expected.to contain_file('puppet.conf').
+          without_content(/^\s+splaylimit.*$/)
+      end
+    end
+
+    context 'string' do
+      let(:params) { { :splaylimit => '30m' } }
+      it do
+        is_expected.to contain_file('puppet.conf').
+          with_content(/^\s+splaylimit\s+= 30m$/)
+      end
+    end
+
+    context 'undef' do
+      let(:params) { { :splaylimit => :undef } }
+      it do
+        is_expected.to contain_file('puppet.conf').
+          without_content(/^\s+splaylimit.*$/)
+      end
+    end
+
+    context 'integer' do
+      let(:params) { { :splaylimit => 1111 } }
+      it do
+        is_expected.to raise_error(Puppet::Error, /expects a value of/)
+      end
+    end
+  end # runinterval
+
 
   ### srv_domain ###
 
@@ -886,7 +941,41 @@ describe 'puppet::config' do
   end # srv_domain
 
   ### strict ###
-  # TODO
+
+  context 'strict' do
+    ['off', 'error'].each do |l|
+      context "strict #{l}" do
+        let(:params) { { 'strict' => l, :master => true } }
+        it "set log_level to #{l}" do
+          is_expected.to contain_file('puppet.conf').
+            with_content(/^.*strict\s+=\s+#{l}$/)
+        end
+      end
+    end
+
+    context "strict foo should fail" do
+      let(:params) { { 'strict' => 'foo', :master => true } }
+      it do is_expected.to raise_error(Puppet::Error, /foo/)
+      end
+    end
+
+    context "strict warning is default" do
+      let(:params) { { :master => true } }
+      it do
+        is_expected.to contain_file('puppet.conf').
+         without_content(/^.*strict = warning$/)
+      end
+    end
+
+    context "strict warning is default" do
+      let(:params) { { 'strict' => 'warning' } }
+      it do
+        is_expected.to contain_file('puppet.conf').
+         without_content(/^.*strict = warning$/)
+      end
+    end
+
+  end
 
   ### trusted_server_facts ###
   context 'trusted_server_facts' do
