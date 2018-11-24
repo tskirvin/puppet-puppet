@@ -28,7 +28,7 @@
 # @param extra_master Extra settings for [master]
 # @param is_ca Am I the Certificate Authority?  Maps to 'ca' field in [master].
 # @param log_level Lives in [main]
-# @param master Configure the [master] section?  
+# @param master Configure the [master] section?
 # @param no_warnings Maps to the 'disable_warnings' field in [main].
 # @param port Puppet service port. Note that this isn't actually used in the template; we need it for other classes.
 # @param proxy_host
@@ -47,8 +47,8 @@
 # @param use_puppetdb  If set, turns on puppetdb for storeconfigs.
 #
 class puppet::config (
-  String[1] $env,
-  String[1] $server,
+  Optional[String[1]] $env = undef,
+  Optional[String[1]] $server = undef,
   Boolean $agent         = true,
   Array   $aliases       = [],
   String  $autosign      = '',
@@ -81,6 +81,10 @@ class puppet::config (
   Boolean $use_puppetdb  = false,
 
 ) {
+  if $agent and ($env == undef or $server == undef) {
+    fail('When the agent section is configured, you must set $env and $server')
+  }
+
   if count($aliases) > 0 {
     $dns_alt_names = concat ([$::fqdn], $aliases)
   }
