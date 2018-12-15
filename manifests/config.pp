@@ -28,7 +28,7 @@
 # @param extra_master Extra settings for [master]
 # @param is_ca Am I the Certificate Authority?  Maps to 'ca' field in [master].
 # @param log_level Lives in [main]
-# @param master Configure the [master] section?  
+# @param master Configure the [master] section?
 # @param no_warnings Maps to the 'disable_warnings' field in [main].
 # @param port Puppet service port. Note that this isn't actually used in the template; we need it for other classes.
 # @param proxy_host
@@ -42,6 +42,7 @@
 # @param splaylimit
 # @param srv_domain If set, use the server option as an SRV domain name instead of a puppetserver name.
 # @param strict Lives in [master]
+# @param strict_variables Fail on unknown variable instead of defaulting to undef value
 # @param trusted_server_facts
 # @param use_cache If set, do not set usecacheonfailure=false
 # @param use_puppetdb  If set, turns on puppetdb for storeconfigs.
@@ -76,6 +77,7 @@ class puppet::config (
   Boolean $show_diff     = false,
   Variant[String, Undef] $splaylimit = undef,
   Enum['off', 'warning', 'error'] $strict = 'warning',
+  Boolean $strict_variables = false,
   Boolean $srv_domain    = false,
   Boolean $use_cache     = false,
   Boolean $use_puppetdb  = false,
