@@ -48,8 +48,6 @@
 # @param use_puppetdb  If set, turns on puppetdb for storeconfigs.
 #
 class puppet::config (
-  String[1] $env,
-  String[1] $server,
   Boolean $agent         = true,
   Array   $aliases       = [],
   String  $autosign      = '',
@@ -58,6 +56,7 @@ class puppet::config (
   String  $config_path   = '/etc/puppetlabs/puppet',
   Integer $configtimeout = -1,
   String  $enc           = '',
+  String  $env           = '',
   String  $envdir        = '/etc/puppetlabs/code/environments',
   Integer $env_timeout   = 180,
   Array   $extra_agent   = [],
@@ -74,6 +73,7 @@ class puppet::config (
   Boolean $run_in_noop   = false,
   Variant[String, Undef] $runinterval = undef,
   Variant[String, Undef] $runtimeout = undef,
+  String $server         = '',
   Boolean $show_diff     = false,
   Variant[String, Undef] $splaylimit = undef,
   Enum['off', 'warning', 'error'] $strict = 'warning',
@@ -85,6 +85,14 @@ class puppet::config (
 ) {
   if count($aliases) > 0 {
     $dns_alt_names = concat ([$::fqdn], $aliases)
+  }
+
+  if $agent and $env == '' {
+    fail('When the agent section is configured, you must set $env')
+  }
+
+  if $agent and $server == '' {
+    fail('When the agent section is configured, you must set $server')
   }
 
   file { 'puppet.conf':

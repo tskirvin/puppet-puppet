@@ -1,6 +1,6 @@
 {
   "name": "tskirvin-puppet",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "author": "Tim Skirvin <tskirvin@fnal.gov>",
   "summary": "manage puppet.conf, puppet runs",
   "license": "Apache-2.0",
@@ -53,6 +53,6 @@
     "hiera"
   ],
   "template-url": "file:///opt/puppetlabs/pdk/share/cache/pdk-templates.git",
-  "template-ref": "1.7.0-0-g57412ed",
-  "pdk-version": "1.7.0"
+  "template-ref": "1.8.0-0-g0d9da00",
+  "pdk-version": "1.8.0"
 }

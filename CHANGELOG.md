@@ -1,5 +1,12 @@
 ## Current
 
+### [1.3.1]
+
+* If `agent` is not set, then you also don't need `env` or `server`.
+  This can come in handy for server-less setups.
+* Reworked test suite for pdk 1.8.0 and modern Ruby.
+* `strict_variables` added to puppet::config (by Morre <morre@mor.re>)
+
 ### [1.3.0]
 
 * `puppet::config` - added lots of new parameters (mostly from Pat
