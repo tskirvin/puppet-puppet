@@ -77,4 +77,3 @@ Set up syslog to log to `/var/log/puppet.log` (configurable).
 # Prerequisites
 
 * puppetlabs/stdlib
-* saz/rsyslog (if you want to enable logging)

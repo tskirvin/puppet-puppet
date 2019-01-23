@@ -1,6 +1,6 @@
 {
   "name": "tskirvin-puppet",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "author": "Tim Skirvin <tskirvin@fnal.gov>",
   "summary": "manage puppet.conf, puppet runs",
   "license": "Apache-2.0",
@@ -11,10 +11,6 @@
     {
       "name": "puppetlabs/stdlib",
       "version_requirement": ">= 4.5.1 < 6.0.0"
-    },
-    {
-      "name": "saz/rsyslog",
-      "version_requirement": ">= 5.0.0 < 7.0.0"
     }
   ],
   "operatingsystem_support": [

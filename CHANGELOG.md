@@ -1,5 +1,10 @@
 ## Current
 
+### [1.3.2]
+
+* removing explicit connection to saz/rsyslog.  Trying to handle things 
+  manually for now.
+
 ### [1.3.1]
 
 * If `agent` is not set, then you also don't need `env` or `server`.

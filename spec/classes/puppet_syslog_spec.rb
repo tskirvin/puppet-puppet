@@ -12,10 +12,10 @@ describe 'puppet::syslog' do
       )
     end # contain file /var/log/puppet/log
 
-    it 'create /etc/rsyslog.d/00-puppet' do
-      is_expected.to contain_rsyslog__snippet('00-puppet')
+    it 'create /etc/rsyslog.d/00-puppet.conf' do
+      is_expected.to contain_file('/etc/rsyslog.d/00-puppet.conf')
         .with_content(%r{\/var\/log\/puppet.log})
-    end # create /etc/rsyslog.d/00-puppet
+    end # create /etc/rsyslog.d/00-puppet.conf
 
     it 'create /etc/logrotate.d/puppet' do
       is_expected.to contain_file('/etc/logrotate.d/puppet')
@@ -35,10 +35,10 @@ describe 'puppet::syslog' do
         )
       end # create puppet.log
 
-      it 'create /etc/rsyslog.d/00-puppet' do
-        is_expected.to contain_rsyslog__snippet('00-puppet')
+      it 'create /etc/rsyslog.d/00-puppet.conf' do
+        is_expected.to contain_file('/etc/rsyslog.d/00-puppet.conf')
           .with_content(%r{\/foo\/puppet.log})
-      end # create /etc/rsyslog.d/00-puppet
+      end # create /etc/rsyslog.d/00-puppet.conf
 
       it 'create /etc/logrotate.d/puppet' do
         is_expected.to contain_file('/etc/logrotate.d/puppet')
