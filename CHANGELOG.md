@@ -1,5 +1,10 @@
 ## Current
 
+### [1.4.0]
+
+* Adding 'ReservedCodeCache' size values to java args on puppet servers, 
+  as per <https://puppet.com/docs/puppetserver/6.1/known_issues.html>
+
 ### [1.3.2]
 
 * removing explicit connection to saz/rsyslog.  Trying to handle things 
