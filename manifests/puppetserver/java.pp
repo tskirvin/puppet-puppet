@@ -48,7 +48,7 @@ class puppet::puppetserver::java (
   file_line { 'puppetserver-java_args':
     path   => "${sysconf_path}/puppetserver",
     line   => $line,
-    match  => 'JAVA_ARGS',
+    match  => '^JAVA_ARGS=',
     notify => Service['puppetserver']
   }
 }

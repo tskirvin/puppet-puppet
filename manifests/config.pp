@@ -5,7 +5,7 @@
 #
 #   include puppet::config    # env and server must be set via hiera
 #
-# @example (Declaring the class (without hiera)
+# @example Declaring the class (without hiera)
 #
 #   class { 'puppet::config':
 #     env    => 'production',

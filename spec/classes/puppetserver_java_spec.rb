@@ -7,7 +7,7 @@ describe 'puppet::puppetserver::java' do
     it 'set java args' do
       is_expected.to contain_file_line('puppetserver-java_args').with(
         path: '/etc/sysconfig/puppetserver',
-        match: 'JAVA_ARGS',
+        match: '^JAVA_ARGS=',
         line: 'JAVA_ARGS="-Xms9g -Xmx12g -XX:ReservedCodeCacheSize=1g -XX:+UseG1GC"',
       )
     end
