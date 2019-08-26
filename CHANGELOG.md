@@ -1,5 +1,8 @@
 ## Unreleased
 
+* `puppetserver::java` - no longer setting Xms or Xmx parameters (they're
+  no longer "required" in modern puppets after 6.1 or so)
+
 ## Current
 
 ### [1.4.1]

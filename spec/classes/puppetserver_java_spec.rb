@@ -8,7 +8,7 @@ describe 'puppet::puppetserver::java' do
       is_expected.to contain_file_line('puppetserver-java_args').with(
         path: '/etc/sysconfig/puppetserver',
         match: '^JAVA_ARGS=',
-        line: 'JAVA_ARGS="-Xms9g -Xmx12g -XX:ReservedCodeCacheSize=1g -XX:+UseG1GC"',
+        line: 'JAVA_ARGS="-XX:ReservedCodeCacheSize=1g -XX:+UseG1GC"',
       )
     end
   end # default params check
@@ -18,7 +18,7 @@ describe 'puppet::puppetserver::java' do
 
     it 'set java args' do
       is_expected.to contain_file_line('puppetserver-java_args').with(
-        line: 'JAVA_ARGS="-Xms9g -Xmx12g  -XX:+UseG1GC"',
+        line: 'JAVA_ARGS=" -XX:+UseG1GC"',
       )
     end
   end # reserve_code_cache=none
@@ -27,7 +27,7 @@ describe 'puppet::puppetserver::java' do
     let(:params) { { reserved_code_cache: '768m' } }
     it 'set java args' do
       is_expected.to contain_file_line('puppetserver-java_args').with(
-        line: 'JAVA_ARGS="-Xms9g -Xmx12g -XX:ReservedCodeCacheSize=768m -XX:+UseG1GC"'
+        line: 'JAVA_ARGS="-XX:ReservedCodeCacheSize=768m -XX:+UseG1GC"'
       )
     end
   end # reserved_code_cache=768m
@@ -36,7 +36,7 @@ describe 'puppet::puppetserver::java' do
     let(:params) { { reserved_code_cache: 'auto', instances: 2 } }
     it 'set java args' do
       is_expected.to contain_file_line('puppetserver-java_args').with(
-        line: 'JAVA_ARGS="-Xms9g -Xmx12g -XX:ReservedCodeCacheSize=512m -XX:+UseG1GC"'
+        line: 'JAVA_ARGS="-XX:ReservedCodeCacheSize=512m -XX:+UseG1GC"'
       )
     end
   end # instances=2 check
@@ -45,7 +45,7 @@ describe 'puppet::puppetserver::java' do
     let(:params) { { reserved_code_cache: 'auto', instances: 4 } }
     it 'set java args' do
       is_expected.to contain_file_line('puppetserver-java_args').with(
-        line: 'JAVA_ARGS="-Xms9g -Xmx12g -XX:ReservedCodeCacheSize=512m -XX:+UseG1GC"'
+        line: 'JAVA_ARGS="-XX:ReservedCodeCacheSize=512m -XX:+UseG1GC"'
       )
     end
   end # instances=4 check
@@ -54,7 +54,7 @@ describe 'puppet::puppetserver::java' do
     let(:params) { { reserved_code_cache: 'auto', instances: 8 } }
     it 'set java args' do
       is_expected.to contain_file_line('puppetserver-java_args').with(
-        line: 'JAVA_ARGS="-Xms9g -Xmx12g -XX:ReservedCodeCacheSize=1g -XX:+UseG1GC"'
+        line: 'JAVA_ARGS="-XX:ReservedCodeCacheSize=1g -XX:+UseG1GC"'
       )
     end
   end # instances=8 check
@@ -63,7 +63,7 @@ describe 'puppet::puppetserver::java' do
     let(:params) { { reserved_code_cache: 'auto', instances: 16 } }
     it 'set java args' do
       is_expected.to contain_file_line('puppetserver-java_args').with(
-        line: 'JAVA_ARGS="-Xms9g -Xmx12g -XX:ReservedCodeCacheSize=2g -XX:+UseG1GC"'
+        line: 'JAVA_ARGS="-XX:ReservedCodeCacheSize=2g -XX:+UseG1GC"'
       )
     end
   end # instances=16 check

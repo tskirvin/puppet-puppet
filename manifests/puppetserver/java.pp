@@ -31,7 +31,9 @@ class puppet::puppetserver::java (
       $java_reserve = "-XX:ReservedCodeCacheSize=${reserved}"
     }
     'none': { $java_reserve = '' }
-    default: { $java_reserve = "-XX:ReservedCodeCacheSize=${reserved_code_cache}" }
+    default: {
+      $java_reserve = "-XX:ReservedCodeCacheSize=${reserved_code_cache}"
+    }
   }
 
   $line = "JAVA_ARGS=\"${java_reserve} ${java_args}\""
