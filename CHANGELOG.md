@@ -1,9 +1,11 @@
 ## Unreleased
 
+## Current
+
+### [1.4.1]
+
 * `puppetserver::java` - matching `^JAVA_ARGS=` instead of `JAVA_ARGS`
   because the latter matches multiple things now.
-
-## Current
 
 ### [1.4.0]
 

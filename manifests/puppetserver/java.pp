@@ -13,8 +13,6 @@
 class puppet::puppetserver::java (
   Integer $instances = $::puppet::puppetserver::max_instances,
   String $java_args = '-XX:+UseG1GC',
-  Numeric $java_memory_min_percentage = 60,
-  Numeric $java_memory_max_percentage = 80,
   String $reserved_code_cache = 'auto',
 ) inherits puppet::puppetserver {
   tag 'puppetserver'
@@ -36,14 +34,7 @@ class puppet::puppetserver::java (
     default: { $java_reserve = "-XX:ReservedCodeCacheSize=${reserved_code_cache}" }
   }
 
-  # generate the JAVA_ARGS argument - Xms, Xmx
-  $memory = $::memorysize_mb / 1024
-  $xms = $memory * $java_memory_min_percentage / 100
-  $xmx = $memory * $java_memory_max_percentage / 100
-
-  $jargs_0 = inline_template('-Xms<%= format("%.0f", @xms) %>g')
-  $jargs_1 = inline_template('-Xmx<%= format("%.0f", @xmx) %>g')
-  $line = "JAVA_ARGS=\"${jargs_0} ${jargs_1} ${java_reserve} ${java_args}\""
+  $line = "JAVA_ARGS=\"${java_reserve} ${java_args}\""
 
   file_line { 'puppetserver-java_args':
     path   => "${sysconf_path}/puppetserver",
