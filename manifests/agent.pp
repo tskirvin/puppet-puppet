@@ -100,6 +100,7 @@ class puppet::agent (
   else                 { $at_boot_ensure = 'absent'  }
 
   service { 'puppet_agent_daemon':
+    ensure => $daemon_ensure,
     name   => $daemon_name,
     enable => $daemon_enable,
   }
