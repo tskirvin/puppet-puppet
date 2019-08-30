@@ -3,6 +3,9 @@
 * `puppetserver::java` - no longer setting Xms or Xmx parameters (they're
   no longer "required" in modern puppets after 6.1 or so)
 
+* `puppet::agent` - when using an agent, actually set the `ensure`
+  parameter had been configured (h/t @hammondr)
+
 ## Current
 
 ### [1.4.1]
