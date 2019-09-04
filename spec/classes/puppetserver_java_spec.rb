@@ -23,50 +23,53 @@ describe 'puppet::puppetserver::java' do
     end
   end # reserve_code_cache=none
 
-  context 'reserved_code_cache=768m' do   # arbitrary text
+  context 'reserved_code_cache=768m' do # arbitrary text
     let(:params) { { reserved_code_cache: '768m' } }
+
     it 'set java args' do
       is_expected.to contain_file_line('puppetserver-java_args').with(
-        line: 'JAVA_ARGS="-XX:ReservedCodeCacheSize=768m -XX:+UseG1GC"'
+        line: 'JAVA_ARGS="-XX:ReservedCodeCacheSize=768m -XX:+UseG1GC"',
       )
     end
   end # reserved_code_cache=768m
 
-  context 'instances=2' do  # should be 512m
+  context 'instances=2' do # should be 512m
     let(:params) { { reserved_code_cache: 'auto', instances: 2 } }
+
     it 'set java args' do
       is_expected.to contain_file_line('puppetserver-java_args').with(
-        line: 'JAVA_ARGS="-XX:ReservedCodeCacheSize=512m -XX:+UseG1GC"'
+        line: 'JAVA_ARGS="-XX:ReservedCodeCacheSize=512m -XX:+UseG1GC"',
       )
     end
   end # instances=2 check
 
-  context 'instances=4' do  # should be 512m (again)
+  context 'instances=4' do # should be 512m (again)
     let(:params) { { reserved_code_cache: 'auto', instances: 4 } }
+
     it 'set java args' do
       is_expected.to contain_file_line('puppetserver-java_args').with(
-        line: 'JAVA_ARGS="-XX:ReservedCodeCacheSize=512m -XX:+UseG1GC"'
+        line: 'JAVA_ARGS="-XX:ReservedCodeCacheSize=512m -XX:+UseG1GC"',
       )
     end
   end # instances=4 check
 
-  context 'instances=8' do  # should be 1g
+  context 'instances=8' do # should be 1g
     let(:params) { { reserved_code_cache: 'auto', instances: 8 } }
+
     it 'set java args' do
       is_expected.to contain_file_line('puppetserver-java_args').with(
-        line: 'JAVA_ARGS="-XX:ReservedCodeCacheSize=1g -XX:+UseG1GC"'
+        line: 'JAVA_ARGS="-XX:ReservedCodeCacheSize=1g -XX:+UseG1GC"',
       )
     end
   end # instances=8 check
 
-  context 'instances=16' do  # should be 2g
+  context 'instances=16' do # should be 2g
     let(:params) { { reserved_code_cache: 'auto', instances: 16 } }
+
     it 'set java args' do
       is_expected.to contain_file_line('puppetserver-java_args').with(
-        line: 'JAVA_ARGS="-XX:ReservedCodeCacheSize=2g -XX:+UseG1GC"'
+        line: 'JAVA_ARGS="-XX:ReservedCodeCacheSize=2g -XX:+UseG1GC"',
       )
     end
   end # instances=16 check
-
-
 end
