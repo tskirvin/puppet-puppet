@@ -352,11 +352,20 @@ describe 'puppet::config' do
       end
     end
 
+    context 'valid string' do
+      let(:params) { { master: true, env_timeout: 'unlimited' } }
+
+      it do
+        is_expected.to contain_file('puppet.conf')
+          .with_content(%r{^\s+environment_timeout\s+= unlimited$})
+      end
+    end
+
     context 'invalid string' do
       let(:params) { { master: true, env_timeout: 'foo' } }
 
       it do
-        is_expected.to raise_error(Puppet::Error, %r{expects an Integer})
+        is_expected.to raise_error(Puppet::Error, %r{must be a})
       end
     end
 
@@ -364,7 +373,7 @@ describe 'puppet::config' do
       let(:params) { { master: true, env_timeout: 1111.1 } }
 
       it do
-        is_expected.to raise_error(Puppet::Error, %r{expects an Integer})
+        is_expected.to raise_error(Puppet::Error, %r{must be a})
       end
     end
   end # env_timeout
