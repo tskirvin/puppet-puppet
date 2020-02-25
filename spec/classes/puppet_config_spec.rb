@@ -365,7 +365,7 @@ describe 'puppet::config' do
       let(:params) { { master: true, env_timeout: 'foo' } }
 
       it do
-        is_expected.to raise_error(Puppet::Error, %r{must be a})
+        is_expected.to raise_error(Puppet::Error, %r{for Variant})
       end
     end
 
@@ -373,7 +373,7 @@ describe 'puppet::config' do
       let(:params) { { master: true, env_timeout: 1111.1 } }
 
       it do
-        is_expected.to raise_error(Puppet::Error, %r{must be a})
+        is_expected.to raise_error(Puppet::Error, %r{for Variant})
       end
     end
   end # env_timeout

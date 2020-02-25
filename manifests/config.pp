@@ -58,7 +58,7 @@ class puppet::config (
   String  $enc           = '',
   String  $env           = '',
   String  $envdir        = '/etc/puppetlabs/code/environments',
-  Variant[String['unlimited'], Integer] $env_timeout = 180,
+  Variant[Enum['unlimited'], Integer] $env_timeout = 180,
   Array   $extra_agent   = [],
   Array   $extra_main    = [],
   Array   $extra_master  = [],
