@@ -15,5 +15,8 @@ fixtures:
     stdlib:
       repo: 'https://github.com/puppetlabs/puppetlabs-stdlib.git'
       ref:  '4.1.0'
+    cron:
+      repo: 'https://github.com/puppetlabs/puppetlabs-cron_core'
+      ref:  '1.0.3'
   symlinks:
     puppet: '#{source_dir}'
