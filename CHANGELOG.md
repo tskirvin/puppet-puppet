@@ -1,5 +1,7 @@
 ## Unreleased
 
+* config.pp - switching from $::fqdn to help with puppet 8
+
 ## Current
 
 ### [1.4.3]

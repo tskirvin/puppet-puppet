@@ -52,7 +52,7 @@ class puppet::config (
   Array   $aliases       = [],
   String  $autosign      = '',
   String  $ca_server     = '',
-  String  $certname      = $::fqdn,
+  String  $certname      = $facts['networking']['fqdn'],
   String  $config_path   = '/etc/puppetlabs/puppet',
   Integer $configtimeout = -1,
   String  $enc           = '',
