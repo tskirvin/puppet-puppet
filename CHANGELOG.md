@@ -1,10 +1,12 @@
 ## Unreleased
 
-* `spec/classes/puppetserver_java_spec.rb` - lint cleanup
-* updated to work with PDK 1.13 (was 1.10)
-* `puppet::config` - can now set `env_timeout` to `unlimited`
-
 ## Current
+
+### [1.4.3]
+
+* `spec/classes/puppetserver_java_spec.rb` - lint cleanup
+* updated to work with PDK 1.15 (was 1.10)
+* `puppet::config` - can now set `env_timeout` to `unlimited`
 
 ### [1.4.2]
 
