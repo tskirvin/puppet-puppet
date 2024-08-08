@@ -84,7 +84,7 @@ class puppet::config (
 
 ) {
   if count($aliases) > 0 {
-    $dns_alt_names = concat ([$::fqdn], $aliases)
+    $dns_alt_names = concat ([$facts['networking']['fqdn']], $aliases)
   }
 
   if $agent and $env == '' {

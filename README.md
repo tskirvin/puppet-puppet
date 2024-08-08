@@ -43,7 +43,7 @@ parameters should provide some flavor:
 
     agent        Should we configure the puppet agent variables?
                  Defaults to true.
-    certname     Maps to the certname field in [main].  Defaults to $::fqdn.
+    certname     Maps to the certname field in [main].  Defaults to $facts['networking']['fqdn']
     enc          Are we using an external node classifier?  If so, set
                  this to the right script name.  Defaults to 'false'.
     env          Default puppet environment; required.

@@ -9,7 +9,7 @@
 class puppet::puppetserver (
   String $config_path = '/etc/puppetlabs',
   String $sysconf_path = '/etc/sysconfig',
-  Integer $max_instances = $::processorcount,
+  Integer $max_instances = $facts['processors']['count'],
   String $ssl_path = 'ssl'
 ) inherits puppet::config {
   tag 'puppetserver'
