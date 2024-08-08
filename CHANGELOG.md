@@ -2,6 +2,7 @@
 
 * config.pp - switching from $::fqdn to help with puppet 8
 * puppetserver.pp - processorcount to $facts['processor']['count']
+* templates/puppetserver-webserver.erb - fqdn fixes again
 * README updates to match
 
 ## Current

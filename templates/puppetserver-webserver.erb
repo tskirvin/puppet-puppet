@@ -4,8 +4,8 @@ webserver: {
     ssl-host = 0.0.0.0
     ssl-port = 8140
 <% if ! @is_ca -%>
-    ssl-cert = <%= @config_path %>/puppet/<%= @ssl_path %>/certs/<%= @fqdn %>.pem
-    ssl-key = <%= @config_path %>/puppet/<%= @ssl_path %>/private_keys/<%= @fqdn %>.pem
+    ssl-cert = <%= @config_path %>/puppet/<%= @ssl_path %>/certs/<%= @facts['networking']['fqdn'] %>.pem
+    ssl-key = <%= @config_path %>/puppet/<%= @ssl_path %>/private_keys/<%= @facts['networking']['fqdn'] %>.pem
     ssl-ca-cert = <%= @config_path %>/puppet/<%= @ssl_path %>/certs/ca.pem
 <% end -%>
     ssl-protocols = TLSv1.2
