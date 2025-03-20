@@ -5,18 +5,20 @@
 # @param sysconf_path
 # @param max_instances
 # @param ssl_path
+# @param package_name
 #
 class puppet::puppetserver (
   String $config_path = '/etc/puppetlabs',
   String $sysconf_path = '/etc/sysconfig',
   Integer $max_instances = $facts['processors']['count'],
-  String $ssl_path = 'ssl'
+  String $ssl_path = 'ssl',
+  String $package_name = 'puppetserver'
 ) inherits puppet::config {
   tag 'puppetserver'
 
   $is_ca = $puppet::config::is_ca
 
-  ensure_packages(['puppetserver'])
+  ensure_packages([$package_name])
   service { 'puppetserver': ensure => running, enable => true }
 
   $line_ca_enable  = 'puppetlabs.services.ca.certificate-authority-service/certificate-authority-service'
